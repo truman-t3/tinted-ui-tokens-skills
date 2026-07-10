@@ -1,20 +1,31 @@
-# Tinted UI Tokens
+# tinted-ui-tokens（染色 UI 设计令牌）
 
-[![Type: WorkBuddy Skill](https://img.shields.io/badge/Type-WorkBuddy%20Skill-blue.svg)](https://www.codebuddy.cn)
+[![Type: Cross-Agent Skill](https://img.shields.io/badge/Type-Cross--Agent%20Skill-blue.svg)](agents/)
 [![Input: 1 brand color](https://img.shields.io/badge/input-1%20brand%20color-orange.svg)](#what-it-can-do)
+[![Engine: Python 3.10+](https://img.shields.io/badge/engine-Python%203.10%2B-green.svg)](#requirements)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 English | [中文](#中文说明)
 
-A WorkBuddy skill that turns one brand color into a complete, production-ready **brand-tinted design-token system** — so your UI stops looking cheap from flat neutral colors.
+A **cross-agent** skill that turns one brand color into a complete,
+production-ready **brand-tinted design-token system** — so your UI stops looking
+cheap from flat neutral colors. It works in Claude Code, Cursor, OpenAI Codex,
+Cline, Aider, WindSurf, GitHub Copilot, Gemini CLI, and WorkBuddy.
 
-No pure neutral colors anywhere (`#FFFFFF`, `#000000`, `#808080`): every background, surface, border, text layer, shadow, semantic color, gradient, and icon picks up a few percent of the brand's temperature.
+No pure neutral colors anywhere (`#FFFFFF`, `#000000`, `#808080`): every
+background, surface, border, text layer, shadow, semantic color, gradient, and
+icon picks up a few percent of the brand's temperature.
+
+The engine (`scripts/generate_tokens.py`) is plain Python standard library and
+runs anywhere Python 3.10+ is available. The instructions live in
+[`INSTRUCTIONS.md`](INSTRUCTIONS.md) and are wired into each agent via the docs in
+[`agents/`](agents/).
 
 ## Who This Is For
 
 - Designers who want a premium, on-brand UI color system without hand-tuning dozens of gray values.
 - Developers who want drop-in CSS variables for light + dark mode from a single hex.
-- Teams that want a consistent "tinted neutral" language across products.
+- Teams that want a consistent "tinted neutral" language across products — and across the different AI coding agents they use.
 - Anyone whose UI currently uses pure `#FFF` / `#000` / `#808080` and reads as "flat".
 
 ## What It Can Do
@@ -27,6 +38,40 @@ No pure neutral colors anywhere (`#FFFFFF`, `#000000`, `#808080`): every backgro
 - Auto-detect warm / cool / balanced temperature from the brand hue.
 - Work for **any** brand color (brand-agnostic generator, not two hard-coded palettes).
 
+## Cross-Agent Compatibility
+
+The skill is agent-agnostic: the engine is a Python script and the instructions
+are a single paste-ready Markdown file. Each agent only differs in *where the rule
+goes*. Full wiring steps are in [`agents/`](agents/).
+
+| Agent | Rule / Command format | Install location | Engine | Status |
+| --- | --- | --- | --- | --- |
+| **Claude Code** | `SKILL.md` (skills) / `/command` | `~/.claude/skills/tinted-ui-tokens/` | Python script | ✅ Supported |
+| **Cursor** | `.mdc` rule | `.cursor/rules/` or `~/.cursor/rules/` | Python script | ✅ Supported |
+| **OpenAI Codex** | `AGENTS.md` / `codex.md` | repo root or `~` | Python script | ✅ Supported |
+| **Cline** | `.clinerules` / `.cline/rules/*.md` | project or `~/.cline/rules/` | Python script | ✅ Supported |
+| **Aider** | `CONVENTIONS.md` (`--read`) | repo root | Python script | ✅ Supported |
+| **WindSurf** | `.windsurfrules` | repo root or `~` | Python script | ✅ Supported |
+| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Python script | ✅ Supported |
+| **Gemini CLI** | `GEMINI.md` | repo root or `~` | Python script | ✅ Supported |
+| **WorkBuddy** | `SKILL.md` (skills) | `~/.workbuddy/skills/tinted-ui-tokens/` | Python script | ✅ Supported |
+
+> All agents share the same engine and the same [`INSTRUCTIONS.md`](INSTRUCTIONS.md).
+> Once cloned, point your agent's rule file at it (see the per-agent docs) and you are done.
+
+## Quick Start (any agent)
+
+```bash
+# 1. Get the engine + instructions
+git clone https://github.com/truman-t3/tinted-ui-tokens ./tinted-ui-tokens
+
+# 2. Run it directly (works in every agent's terminal)
+python ./tinted-ui-tokens/scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
+```
+
+Then wire it into your agent by following the matching doc in
+[`agents/`](agents/) (typically: paste `INSTRUCTIONS.md` into your agent's rule file).
+
 ## Example Workflows
 
 - "Use `#2563EB` to generate a tinted token system" → get `tokens.css` + `preview.html`.
@@ -36,34 +81,18 @@ No pure neutral colors anywhere (`#FFFFFF`, `#000000`, `#808080`): every backgro
 
 ## Requirements
 
-- Python 3.10+ (the skill uses the managed WorkBuddy Python runtime).
-- No external dependencies — `generate_tokens.py` is standard library only.
+- Python 3.10+ (standard library only — no `pip install` needed).
+- Windows / macOS / Linux all supported (engine is pure Python).
 
-## Compatibility
-
-| Environment | Requirement | Status |
-| --- | --- | --- |
-| WorkBuddy | Skill runtime | Supported |
-| Python | 3.10+ | Tested |
-| OS | Windows / macOS / Linux | Tested on Windows |
-
-## Install
-
-This is a WorkBuddy skill. To install it, clone into your user-level skills directory:
-
-```bash
-git clone https://github.com/truman-t3/tinted-ui-tokens ~/.workbuddy/skills/tinted-ui-tokens
-```
-
-Or copy the folder `tinted-ui-tokens/` into `~/.workbuddy/skills/`. WorkBuddy picks it up automatically.
-
-## How to Use (in WorkBuddy)
+## How to Use (WorkBuddy / Claude Code)
 
 Invoke the skill by asking, for example:
 
 > 用 `#2563EB` 出一套染色 Token 系统
 
-The skill runs `scripts/generate_tokens.py` and presents `preview.html` + `tokens.css`.
+The agent runs `scripts/generate_tokens.py` and presents `preview.html` + `tokens.css`.
+
+For every other agent, follow its doc in [`agents/`](agents/).
 
 ## CLI Usage
 
@@ -90,20 +119,28 @@ No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere.
 
 ## How It Works
 
-The generator is **brand-agnostic**: it blends the brand hue into each neutral ramp with a small chroma, derives a warm / cool / balanced temperature, and emits a full token set — instead of hard-coding the two palettes from the original essay.
+The generator is **brand-agnostic**: it blends the brand hue into each neutral ramp
+with a small chroma, derives a warm / cool / balanced temperature, and emits a full
+token set — instead of hard-coding the two palettes from the original essay.
 
-Method distilled from the article 《你的UI廉价，错在颜色》. See `references/principles.md` for the design principles and the desaturation grayscale test.
+Method distilled from the article 《你的UI廉价，错在颜色》. See
+[`references/principles.md`](references/principles.md) for the design principles and
+the desaturation grayscale test.
 
 ## Files
 
-- `SKILL.md` — skill manifest (triggers + workflow)
-- `scripts/generate_tokens.py` — the token generator
+- `SKILL.md` — WorkBuddy / Claude Code skill manifest (triggers + workflow)
+- `INSTRUCTIONS.md` — agent-neutral instruction set (paste into any agent's rules)
+- `scripts/generate_tokens.py` — the token generator (the engine)
 - `references/principles.md` — design principles
+- `agents/` — per-agent wiring docs (Claude Code, Cursor, Codex, Cline, Aider, WindSurf, Copilot, Gemini)
 - `README.md` — this document
 
 ## Notes
 
-The generated tokens intentionally keep the brand tint subtle (a few percent of chroma) so the UI reads as "designed" rather than "themed". Validate a system with the grayscale test in `references/principles.md`.
+The generated tokens intentionally keep the brand tint subtle (a few percent of
+chroma) so the UI reads as "designed" rather than "themed". Validate a system with
+the grayscale test in [`references/principles.md`](references/principles.md).
 
 ## Roadmap
 
@@ -120,17 +157,24 @@ MIT
 
 # 中文说明
 
-[English](#tinted-ui-tokens) | 中文
+[English](#tinted-ui-tokens染色-ui-设计令牌) | 中文
 
-一个 WorkBuddy 技能：输入一个品牌色，自动生成一套完整、可直接上线的「染色中性色」设计 Token 系统——让你的 UI 不再因为扁平的中性色而显得廉价。
+一个**跨 agent** 的技能：输入一个品牌色，自动生成一套完整、可直接上线的「染色中性色」
+设计 Token 系统——让你的 UI 不再因为扁平的中性色而显得廉价。它可在 Claude Code、
+Cursor、OpenAI Codex、Cline、Aider、WindSurf、GitHub Copilot、Gemini CLI 与
+WorkBuddy 中使用。
 
-任何地方都不使用纯中性色（`#FFFFFF`、`#000000`、`#808080`）：每一个背景、表面、边框、文字层级、阴影、语义色、渐变与图标，都带上一小撮品牌色的温度。
+任何地方都不使用纯中性色（`#FFFFFF`、`#000000`、`#808080`）：每一个背景、表面、边框、
+文字层级、阴影、语义色、渐变与图标，都带上一小撮品牌色的温度。
+
+引擎（`scripts/generate_tokens.py`）仅用 Python 标准库，Python 3.10+ 任意系统可跑。
+指令在 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)，各 agent 的接入方式见 [`agents/`](agents/)。
 
 ## 适合谁使用
 
 - 想要高级、统一品牌感配色，又不想手动调几十个灰阶的设计师。
 - 想用一个 hex 直接得到可即用的明 / 暗双模式 CSS 变量的开发者。
-- 希望跨产品保持一致的「染色中性色」语言规范的团队。
+- 希望跨产品、跨不同 AI 编程 agent 都保持一致的「染色中性色」语言规范的团队。
 - 当前 UI 还在用纯 `#FFF` / `#000` / `#808080`、整体显得「平」的任何人。
 
 ## 能做什么
@@ -143,6 +187,39 @@ MIT
 - 根据品牌色相自动判定暖 / 冷 / 中性三种温度。
 - 对任意品牌色都适用（品牌无关的生成器，而非写死的两套配色）。
 
+## 跨 Agent 兼容性
+
+本技能与具体 agent 无关：引擎是一个 Python 脚本，指令是一份可直接粘贴的 Markdown。
+各 agent 的区别只在于**规则文件放在哪**。完整的接入步骤见 [`agents/`](agents/)。
+
+| Agent | 规则 / 命令格式 | 安装位置 | 引擎 | 状态 |
+| --- | --- | --- | --- | --- |
+| **Claude Code** | `SKILL.md`（skills）/ `/command` | `~/.claude/skills/tinted-ui-tokens/` | Python 脚本 | ✅ 支持 |
+| **Cursor** | `.mdc` 规则 | `.cursor/rules/` 或 `~/.cursor/rules/` | Python 脚本 | ✅ 支持 |
+| **OpenAI Codex** | `AGENTS.md` / `codex.md` | 仓库根目录或 `~` | Python 脚本 | ✅ 支持 |
+| **Cline** | `.clinerules` / `.cline/rules/*.md` | 项目或 `~/.cline/rules/` | Python 脚本 | ✅ 支持 |
+| **Aider** | `CONVENTIONS.md`（`--read`） | 仓库根目录 | Python 脚本 | ✅ 支持 |
+| **WindSurf** | `.windsurfrules` | 仓库根目录或 `~` | Python 脚本 | ✅ 支持 |
+| **GitHub Copilot** | `copilot-instructions.md` | `.github/` | Python 脚本 | ✅ 支持 |
+| **Gemini CLI** | `GEMINI.md` | 仓库根目录或 `~` | Python 脚本 | ✅ 支持 |
+| **WorkBuddy** | `SKILL.md`（skills） | `~/.workbuddy/skills/tinted-ui-tokens/` | Python 脚本 | ✅ 支持 |
+
+> 所有 agent 共用同一个引擎与同一份 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)。克隆仓库后，
+> 把指令粘贴进你所用 agent 的规则文件即可（见各 agent 文档）。
+
+## 快速开始（任意 agent）
+
+```bash
+# 1. 获取引擎与指令
+git clone https://github.com/truman-t3/tinted-ui-tokens ./tinted-ui-tokens
+
+# 2. 直接运行（任意 agent 的终端都能跑）
+python ./tinted-ui-tokens/scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
+```
+
+然后按 [`agents/`](agents/) 中对应文档把技能接入你的 agent（通常只需把
+`INSTRUCTIONS.md` 粘贴进规则文件）。
+
 ## 典型使用场景
 
 - 「用 `#2563EB` 出一套染色 Token 系统」→ 得到 `tokens.css` + `preview.html`。
@@ -152,34 +229,18 @@ MIT
 
 ## 使用要求
 
-- Python 3.10+（技能默认使用 WorkBuddy 托管的 Python 运行时）。
-- 无外部依赖——`generate_tokens.py` 仅用标准库。
+- Python 3.10+（仅标准库，无需 `pip install`）。
+- Windows / macOS / Linux 均支持（引擎为纯 Python）。
 
-## 版本兼容表
-
-| 环境 | 要求 | 状态 |
-| --- | --- | --- |
-| WorkBuddy | 技能运行时 | 支持 |
-| Python | 3.10+ | 已测试 |
-| 操作系统 | Windows / macOS / Linux | 已在 Windows 测试 |
-
-## 安装
-
-这是一个 WorkBuddy 技能。安装方式：克隆到你的用户级技能目录：
-
-```bash
-git clone https://github.com/truman-t3/tinted-ui-tokens ~/.workbuddy/skills/tinted-ui-tokens
-```
-
-或者把 `tinted-ui-tokens/` 文件夹复制到 `~/.workbuddy/skills/`。WorkBuddy 会自动识别。
-
-## 使用方法（在 WorkBuddy 中）
+## 使用方法（WorkBuddy / Claude Code）
 
 像下面这样唤起技能即可：
 
 > 用 `#2563EB` 出一套染色 Token 系统
 
-技能会运行 `scripts/generate_tokens.py`，并展示 `preview.html` 与 `tokens.css`。
+Agent 会运行 `scripts/generate_tokens.py`，并展示 `preview.html` 与 `tokens.css`。
+
+其他 agent 请按 [`agents/`](agents/) 中的对应文档操作。
 
 ## 命令行用法
 
@@ -206,20 +267,26 @@ python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 
 ## 工作原理
 
-生成器是**品牌无关**的：它把品牌色相以极小的彩度混入每条中性色阶，推导出暖 / 冷 / 中性三种温度，并输出一整套 Token——而不是把文章里的两套配色写死。
+生成器是**品牌无关**的：它把品牌色相以极小的彩度混入每条中性色阶，推导出暖 / 冷 / 中性
+三种温度，并输出一整套 Token——而不是把文章里的两套配色写死。
 
-方法论提炼自文章《你的UI廉价，错在颜色》。设计原则与「去饱和灰度测试」详见 `references/principles.md`。
+方法论提炼自文章《你的UI廉价，错在颜色》。设计原则与「去饱和灰度测试」详见
+[`references/principles.md`](references/principles.md)。
 
 ## 文件结构
 
-- `SKILL.md` — 技能清单（触发场景 + 工作流）
+- `SKILL.md` — WorkBuddy / Claude Code 技能清单（触发场景 + 工作流）
+- `INSTRUCTIONS.md` — 与 agent 无关的指令集（可粘贴进任意 agent 规则）
 - `scripts/generate_tokens.py` — Token 生成引擎
 - `references/principles.md` — 设计原则
+- `agents/` — 各 agent 接入文档（Claude Code、Cursor、Codex、Cline、Aider、WindSurf、Copilot、Gemini）
 - `README.md` — 本说明文档
 
 ## 说明
 
-生成的 Token 故意把品牌染色保持在很小的比例（几个百分点的彩度），让界面读起来像「精心设计」而非「套了主题色」。可用 `references/principles.md` 里的灰度测试来验证一套系统是否合格。
+生成的 Token 故意把品牌染色保持在很小的比例（几个百分点的彩度），让界面读起来像
+「精心设计」而非「套了主题色」。可用 [`references/principles.md`](references/principles.md)
+里的灰度测试来验证一套系统是否合格。
 
 ## 路线图
 

@@ -1,10 +1,11 @@
 ---
 name: tinted-ui-tokens
+display_name: 染色 UI 设计令牌
 description: "Generates a complete, production-ready design-token system from a single brand color, where every neutral surface (backgrounds, borders, text, shadows, semantic colors, gradients, icons, dark mode) carries a few percent of the brand's temperature instead of using pure neutral colors. Use when a user asks to generate, build, or design UI color tokens, a design system, CSS variables, a tinted color palette, or a branded theme from a brand color or hex, or wants to make an existing UI look more premium by fixing flat neutral colors. Trigger phrases include 给我生成一套设计Token, 用这个品牌色出一套配色, UI颜色太廉价了, 生成染色中性色系统, build a design system from #XXXXXX, tinted neutral palette."
 agent_created: true
 ---
 
-# Tinted UI Tokens
+# Tinted UI Tokens（染色 UI 设计令牌）
 
 ## Overview
 
@@ -18,6 +19,22 @@ than "assembled".
 The bundled generator (`scripts/generate_tokens.py`) is brand-agnostic: it
 derives the temperature by blending each neutral ramp toward the given brand
 hue, so it works for any color, not just the two palettes in the original essay.
+
+### Cross-agent · 跨 agent
+
+This skill is **agent-agnostic**. WorkBuddy and Claude Code read this `SKILL.md`
+directly. For every other agent (Cursor, OpenAI Codex, Cline, Aider, WindSurf,
+GitHub Copilot, Gemini CLI), the same instructions live in
+[`INSTRUCTIONS.md`](INSTRUCTIONS.md) and are wired in via the docs under
+[`agents/`](agents/) — each agent only differs in where its rule file goes. The
+engine (`scripts/generate_tokens.py`) is identical everywhere. See the
+`Cross-Agent Compatibility` table in `README.md`.
+
+> 中文：本技能与具体 agent 无关。WorkBuddy 与 Claude Code 直接读取本 `SKILL.md`；
+> 其余 agent（Cursor、OpenAI Codex、Cline、Aider、WindSurf、GitHub Copilot、Gemini CLI）
+> 使用 [`INSTRUCTIONS.md`](INSTRUCTIONS.md) 中的同一份指令，并按 [`agents/`](agents/)
+> 下的文档接入——差异只在规则文件的位置。引擎（`scripts/generate_tokens.py`）各处一致。
+> 详见 `README.md` 的「跨 Agent 兼容性」表。
 
 > 中文：内置生成器（`scripts/generate_tokens.py`）是品牌无关的——它把每条中性色阶朝给定品牌色相方向混合，从而推导出整套系统的温度，因此对任意颜色都适用，而不局限于原文中的两套配色。
 
@@ -46,12 +63,11 @@ Do not over-ask. One hex is enough to produce the whole system.
 
 ### 2. Run the generator
 
-Use the managed Python runtime:
+Use Python 3.10+ (on WorkBuddy use the managed runtime; on other agents use any
+system `python` / `python3`):
 
 ```bash
-C:\Users\tyy\.workbuddy\binaries\python\versions\3.13.12\python.exe \
-  "$SKILL_DIR/scripts/generate_tokens.py" \
-  --brand "#2563EB" --name "Acme" --out "./out"
+python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 ```
 
 - `--brand` (required): any hex color.

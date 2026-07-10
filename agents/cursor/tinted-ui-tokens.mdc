@@ -1,0 +1,18 @@
+---
+description: Generate a brand-tinted UI design-token system (CSS) from a single brand color. No pure neutral colors.
+globs:
+alwaysApply: false
+---
+
+# Tinted UI Tokens · 染色 UI 设计令牌
+
+When the user wants to generate UI color tokens, a design system, CSS variables,
+or a branded theme from a brand color (or wants to fix a "cheap-looking" flat UI),
+follow the instructions in `INSTRUCTIONS.md` of the tinted-ui-tokens repo:
+
+1. Collect the brand hex (ask if missing).
+2. Run `scripts/generate_tokens.py --brand <hex> --name <name> --out <dir>`.
+3. Present `tokens.css` + `preview.html`.
+
+Repo: https://github.com/truman-t3/tinted-ui-tokens
+Method: every neutral surface gets 2–3% of the brand hue — never pure #FFF/#000/#808080.
