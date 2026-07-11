@@ -1,11 +1,11 @@
 ---
 name: tinted-ui-tokens
-display_name: 品牌色 UI 设计 Token
+display_name: 品牌色 UI 设计 Token skills
 description: "Generates a complete, production-ready design-token system from a single brand color, where every neutral surface (backgrounds, borders, text, shadows, semantic colors, gradients, icons, dark mode) carries a few percent of the brand's temperature instead of using pure neutral colors. Use when a user asks to generate, build, or design UI color tokens, a design system, CSS variables, a tinted color palette, or a branded theme from a brand color or hex, or wants to make an existing UI look more premium by fixing flat neutral colors. Trigger phrases include 给我生成一套设计Token, 用这个品牌色出一套配色, UI颜色太廉价了, 生成染色中性色系统, build a design system from #XXXXXX, tinted neutral palette."
 agent_created: true
 ---
 
-# Tinted UI Tokens（品牌色 UI 设计 Token）
+# Tinted UI Tokens（品牌色 UI 设计 Token skills）
 
 ## Overview
 

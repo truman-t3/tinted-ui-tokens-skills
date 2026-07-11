@@ -1,4 +1,4 @@
-# tinted-ui-tokens（品牌色 UI 设计 Token）
+# tinted-ui-tokens（品牌色 UI 设计 Token skills）
 
 [![Type: Cross-Agent Skill](https://img.shields.io/badge/Type-Cross--Agent%20Skill-blue.svg)](agents/)
 [![Input: 1 brand color](https://img.shields.io/badge/input-1%20brand%20color-orange.svg)](#what-it-can-do)
