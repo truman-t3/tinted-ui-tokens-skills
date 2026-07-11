@@ -4,7 +4,7 @@ globs:
 alwaysApply: false
 ---
 
-# Tinted UI Tokens · 染色 UI 设计令牌
+# Tinted UI Tokens · 品牌色 UI 设计 Token
 
 When the user wants to generate UI color tokens, a design system, CSS variables,
 or a branded theme from a brand color (or wants to fix a "cheap-looking" flat UI),

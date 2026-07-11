@@ -1,6 +1,6 @@
 # Tinted UI Tokens — Skill Instructions · 技能指令
 
-> Agent-neutral instruction set for **tinted-ui-tokens（染色 UI 设计令牌）**.
+> Agent-neutral instruction set for **tinted-ui-tokens（品牌色 UI 设计 Token）**.
 > Paste this file's contents into your agent's rule / memory / command file
 > (see [`agents/`](agents/) for per-agent wiring). The engine is
 > `scripts/generate_tokens.py` — pure Python standard library, runs anywhere
