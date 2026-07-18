@@ -4,10 +4,15 @@ GitHub Copilot (in VS Code / Codespaces) reads `.github/copilot-instructions.md`
 
 ## Install · 安装
 
-Append a section to `.github/copilot-instructions.md`:
+A ready-to-use file is provided: [`copilot-instructions.md`](copilot-instructions.md).
+Copy it to `.github/`, or merge its contents into an existing one:
 
 ```bash
-cat INSTRUCTIONS.md >> .github/copilot-instructions.md
+mkdir -p .github
+cp copilot-instructions.md .github/copilot-instructions.md
+
+# or merge into an existing one
+cat copilot-instructions.md >> .github/copilot-instructions.md
 ```
 
 Make the engine available:

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 470" font-family="-apple-system, 'Segoe UI', 'PingFang SC', system-ui, sans-serif" role="img" aria-label="Tinted UI Tokens preview: light and dark theme generated from brand color #2563EB">
+  <defs>
+    <linearGradient id="heroLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBFCFF"/>
+      <stop offset="60%" stop-color="#E0E9FC"/>
+      <stop offset="100%" stop-color="#E7EAF1"/>
+    </linearGradient>
+    <linearGradient id="heroDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#172137"/>
+      <stop offset="60%" stop-color="#1A2E5B"/>
+      <stop offset="100%" stop-color="#1D273F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- caption strip -->
+  <text x="24" y="30" fill="#444E64" font-size="15" font-weight="600">Tinted UI Tokens · one brand color <tspan fill="#2563EB">#2563EB</tspan> → a full light + dark system</text>
+
+  <!-- ============ LIGHT PANEL ============ -->
+  <g transform="translate(24,48)">
+    <rect width="430" height="400" rx="16" fill="#F1F3F8" stroke="#D8DCE5"/>
+    <!-- topbar -->
+    <g transform="translate(20,20)">
+      <rect width="390" height="52" rx="10" fill="#FBFCFF" stroke="#D8DCE5"/>
+      <rect x="14" y="12" width="28" height="28" rx="7" fill="#2563EB"/>
+      <text x="54" y="26" fill="#141E34" font-size="13" font-weight="600">Acme</text>
+      <text x="54" y="42" fill="#8590A9" font-size="10" letter-spacing="0.4">brand #2563EB · cool temperature</text>
+      <rect x="300" y="12" width="76" height="28" rx="8" fill="#E7EAF1" stroke="#B5BCCB"/>
+      <text x="338" y="30" fill="#444E64" font-size="10" text-anchor="middle">明 / 暗</text>
+    </g>
+    <!-- hero -->
+    <g transform="translate(20,86)">
+      <rect width="390" height="118" rx="12" fill="url(#heroLight)" stroke="#D8DCE5"/>
+      <text x="20" y="40" fill="#141E34" font-size="17" font-weight="700">品牌色，流进整个系统</text>
+      <text x="20" y="66" fill="#444E64" font-size="11">背景 · 表面 · 边框 · 文字 · 阴影 · 语义色 · 渐变 · 图标</text>
+      <text x="20" y="84" fill="#444E64" font-size="11">每一层都带着同一份品牌色温，没有纯中性色。</text>
+      <rect x="20" y="94" width="96" height="18" rx="5" fill="#E0E9FC"/>
+      <text x="30" y="107" fill="#2563EB" font-size="9" font-weight="600" letter-spacing="0.6">BRAND SUBTLE</text>
+    </g>
+    <!-- card -->
+    <g transform="translate(20,218)">
+      <rect width="230" height="106" rx="10" fill="#FBFCFF" stroke="#D8DCE5"/>
+      <text x="16" y="24" fill="#8590A9" font-size="9" font-weight="600" letter-spacing="1">OVERVIEW</text>
+      <text x="16" y="46" fill="#141E34" font-size="14" font-weight="600">染色中性色</text>
+      <text x="16" y="68" fill="#444E64" font-size="10">品牌出现时不像被临时贴上去，</text>
+      <text x="16" y="83" fill="#444E64" font-size="10">而像本来就属于这里。</text>
+    </g>
+    <!-- semantic swatches -->
+    <g transform="translate(262,218)">
+      <rect width="148" height="106" rx="10" fill="#FBFCFF" stroke="#D8DCE5"/>
+      <text x="14" y="24" fill="#8590A9" font-size="9" font-weight="600" letter-spacing="1">SEMANTIC</text>
+      <rect x="14" y="34" width="36" height="26" rx="6" fill="#CA3038"/>
+      <rect x="56" y="34" width="36" height="26" rx="6" fill="#E09821"/>
+      <rect x="98" y="34" width="36" height="26" rx="6" fill="#1C9A54"/>
+      <text x="14" y="76" fill="#444E64" font-size="9">error</text>
+      <text x="56" y="76" fill="#444E64" font-size="9">warning</text>
+      <text x="98" y="76" fill="#444E64" font-size="9">success</text>
+      <text x="14" y="94" fill="#8590A9" font-size="9">nudged toward brand hue</text>
+    </g>
+    <text x="20" y="352" fill="#8590A9" font-size="10" font-weight="600">LIGHT</text>
+  </g>
+
+  <!-- ============ DARK PANEL ============ -->
+  <g transform="translate(486,48)">
+    <rect width="430" height="400" rx="16" fill="#11192C" stroke="#1F2D4A"/>
+    <!-- topbar -->
+    <g transform="translate(20,20)">
+      <rect width="390" height="52" rx="10" fill="#172137" stroke="#1F2D4A"/>
+      <rect x="14" y="12" width="28" height="28" rx="7" fill="#2563EB"/>
+      <text x="54" y="26" fill="#E0E7F5" font-size="13" font-weight="600">Acme</text>
+      <text x="54" y="42" fill="#7388A6" font-size="10" letter-spacing="0.4">brand #2563EB · cool temperature</text>
+      <rect x="300" y="12" width="76" height="28" rx="8" fill="#1D273F" stroke="#2C3C5E"/>
+      <text x="338" y="30" fill="#8497B8" font-size="10" text-anchor="middle">明 / 暗</text>
+    </g>
+    <!-- hero -->
+    <g transform="translate(20,86)">
+      <rect width="390" height="118" rx="12" fill="url(#heroDark)" stroke="#1F2D4A"/>
+      <text x="20" y="40" fill="#E0E7F5" font-size="17" font-weight="700">品牌色，流进整个系统</text>
+      <text x="20" y="66" fill="#8497B8" font-size="11">背景 · 表面 · 边框 · 文字 · 阴影 · 语义色 · 渐变 · 图标</text>
+      <text x="20" y="84" fill="#8497B8" font-size="11">暗色也不是死黑，而是带品牌色温的深色。</text>
+      <rect x="20" y="94" width="96" height="18" rx="5" fill="#1A2E5B"/>
+      <text x="30" y="107" fill="#8FB0FF" font-size="9" font-weight="600" letter-spacing="0.6">BRAND SUBTLE</text>
+    </g>
+    <!-- card -->
+    <g transform="translate(20,218)">
+      <rect width="230" height="106" rx="10" fill="#172137" stroke="#1F2D4A"/>
+      <text x="16" y="24" fill="#7388A6" font-size="9" font-weight="600" letter-spacing="1">OVERVIEW</text>
+      <text x="16" y="46" fill="#E0E7F5" font-size="14" font-weight="600">染色中性色</text>
+      <text x="16" y="68" fill="#8497B8" font-size="10">同一套算法，暗色表面也朝</text>
+      <text x="16" y="83" fill="#8497B8" font-size="10">品牌色相方向混合。</text>
+    </g>
+    <!-- semantic swatches -->
+    <g transform="translate(262,218)">
+      <rect width="148" height="106" rx="10" fill="#172137" stroke="#1F2D4A"/>
+      <text x="14" y="24" fill="#7388A6" font-size="9" font-weight="600" letter-spacing="1">SEMANTIC</text>
+      <rect x="14" y="34" width="36" height="26" rx="6" fill="#CA3038"/>
+      <rect x="56" y="34" width="36" height="26" rx="6" fill="#E09821"/>
+      <rect x="98" y="34" width="36" height="26" rx="6" fill="#1C9A54"/>
+      <text x="14" y="76" fill="#8497B8" font-size="9">error</text>
+      <text x="56" y="76" fill="#8497B8" font-size="9">warning</text>
+      <text x="98" y="76" fill="#8497B8" font-size="9">success</text>
+      <text x="14" y="94" fill="#7388A6" font-size="9">error stays reddish</text>
+    </g>
+    <text x="20" y="352" fill="#7388A6" font-size="10" font-weight="600">DARK</text>
+  </g>
+</svg>

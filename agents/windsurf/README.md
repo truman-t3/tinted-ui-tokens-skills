@@ -4,10 +4,14 @@ WindSurf reads `.windsurfrules` from the project root (or global memories).
 
 ## Install · 安装
 
-Append the instruction to `.windsurfrules`:
+A ready-to-use rule file is provided: [`.windsurfrules`](.windsurfrules). Drop it
+in your project root (or merge into an existing `.windsurfrules`):
 
 ```bash
-cat INSTRUCTIONS.md >> .windsurfrules
+cp .windsurfrules ./.windsurfrules
+
+# or merge into an existing one
+cat .windsurfrules >> .windsurfrules
 ```
 
 Make the engine available:

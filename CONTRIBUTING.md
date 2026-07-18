@@ -11,14 +11,15 @@ on purpose.
 3. **Keep the skill agent-neutral.** The engine (`scripts/generate_tokens.py`)
    must stay identical across agents. Agent-specific differences live only in
    `agents/<agent>/` (rule-file location, install snippet).
-4. **Run the local validator** before pushing:
+4. **Run the local checks** before pushing:
 
    ```bash
-   python scripts/validate_skill.py
+   python scripts/validate_skill.py   # SKILL.md frontmatter (package_skill.py rules)
+   python scripts/smoke_test.py       # generator smoke + extreme-color robustness + semantic sanity
    ```
 
-   It replicates the CI checks (frontmatter validity + 3-color smoke test +
-   semantic-color sanity). CI must stay green.
+   These are the exact checks CI runs (see `.github/workflows/validate.yml`), so
+   "passes locally" == "passes CI". CI must stay green.
 
 5. **Update docs together:** if you change the slug / skill name, update every
    reference in `SKILL.md`, `README.md`, `INSTRUCTIONS.md`, and all

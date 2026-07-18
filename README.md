@@ -23,6 +23,12 @@ runs anywhere Python 3.10+ is available. The instructions live in
 [`INSTRUCTIONS.md`](INSTRUCTIONS.md) and are wired into each agent via the docs in
 [`agents/`](agents/).
 
+![Light and dark UI generated from brand color #2563EB](assets/preview.svg)
+
+> Above: light + dark output for brand `#2563EB` (cool). Every surface, border,
+> text layer, and semantic color is tinted toward the brand — run the generator
+> to get a live `preview.html` with a real light/dark toggle.
+
 ## Who This Is For
 
 - Designers who want a premium, on-brand UI color system without hand-tuning dozens of gray values.
@@ -173,6 +179,11 @@ WorkBuddy 中使用。
 
 引擎（`scripts/generate_tokens.py`）仅用 Python 标准库，Python 3.10+ 任意系统可跑。
 指令在 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)，各 agent 的接入方式见 [`agents/`](agents/)。
+
+![由品牌色 #2563EB 生成的明暗两套 UI](assets/preview.svg)
+
+> 上图：品牌色 `#2563EB`（冷色）的明 / 暗两套输出。每个表面、边框、文字层级与语义色
+> 都朝品牌色方向染色——运行生成器即可得到带真实明暗切换的 `preview.html`。
 
 ## 适合谁使用
 

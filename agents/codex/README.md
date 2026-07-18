@@ -5,10 +5,15 @@ and can execute shell commands (including the Python engine).
 
 ## Install · 安装
 
-Append the skill instructions to your `AGENTS.md` (repo root) — or create one:
+A ready-to-use rule file is provided: [`AGENTS.md`](AGENTS.md). Drop it in your
+repo root, or merge its contents into an existing `AGENTS.md`:
 
 ```bash
-cat INSTRUCTIONS.md >> AGENTS.md
+# use the provided file as-is
+cp AGENTS.md ./AGENTS.md
+
+# or merge into an existing one
+cat AGENTS.md >> AGENTS.md
 ```
 
 Make the engine available (clone the repo so `scripts/generate_tokens.py` resolves):

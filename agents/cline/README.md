@@ -5,14 +5,16 @@ from `~/.cline/rules`.
 
 ## Install · 安装
 
-Copy the instruction into a Cline rule file:
+A ready-to-use rule file is provided: [`.clinerules`](.clinerules). Drop it in
+your project root, or copy it into a Cline rules directory:
 
 ```bash
-# project rule
-cp INSTRUCTIONS.md <your-project>/.cline/rules/tinted-ui-tokens.md
+# project root
+cp .clinerules <your-project>/.clinerules
 
-# or global rule
-cp INSTRUCTIONS.md ~/.cline/rules/tinted-ui-tokens.md
+# or as a named rule (project / global)
+cp .clinerules <your-project>/.cline/rules/tinted-ui-tokens-skills.md
+cp .clinerules ~/.cline/rules/tinted-ui-tokens-skills.md
 ```
 
 Make the engine available:

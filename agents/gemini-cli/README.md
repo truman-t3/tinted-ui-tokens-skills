@@ -4,10 +4,14 @@ Gemini CLI reads a `GEMINI.md` memory file from the working directory or your ho
 
 ## Install · 安装
 
-Append the instruction to `GEMINI.md`:
+A ready-to-use memory file is provided: [`GEMINI.md`](GEMINI.md). Drop it in your
+working directory or home (or merge into an existing `GEMINI.md`):
 
 ```bash
-cat INSTRUCTIONS.md >> GEMINI.md
+cp GEMINI.md ./GEMINI.md
+
+# or merge into an existing one
+cat GEMINI.md >> GEMINI.md
 ```
 
 Make the engine available:

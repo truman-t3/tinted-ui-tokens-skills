@@ -4,16 +4,14 @@ Aider reads conventions from `CONVENTIONS.md` (via `--read`) or `.aider.conf.yml
 
 ## Install · 安装
 
-Point Aider at the instruction file when launching:
+A ready-to-use convention file is provided: [`CONVENTIONS.md`](CONVENTIONS.md).
 
 ```bash
-aider --read INSTRUCTIONS.md
-```
+# launch Aider reading the provided file directly
+aider --read CONVENTIONS.md
 
-Or concatenate into an existing `CONVENTIONS.md`:
-
-```bash
-cat INSTRUCTIONS.md >> CONVENTIONS.md
+# or merge into an existing CONVENTIONS.md
+cat CONVENTIONS.md >> CONVENTIONS.md
 aider
 ```
 
