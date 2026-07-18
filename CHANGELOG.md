@@ -4,6 +4,29 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-07-18
+
+### Added
+- **WCAG 2.1 contrast auto-check + compensation.** Every text-on-surface pair
+  is measured with the relative-luminance formula; if it falls below AA
+  (4.5:1 normal / 3:1 muted) the text is nudged along its HSL lightness axis
+  until it passes — so readability always wins and the brand hue-lean is kept
+  wherever lightness does not hit an extreme. The CLI prints the final three
+  contrast ratios (light / dark / on-brand).
+- **`--color-on-brand` token.** A readable text/icon color to place ON
+  `--color-brand` (tinted near-white or near-black, never pure `#FFF`/`#000`),
+  auto-chosen by contrast. Used by the new primary button in `preview.html`.
+- **Adjustable tint strength.** `--tint-strength subtle|normal|strong` scales
+  every blend factor uniformly (0.6 / 1.0 / 1.6) — stronger brand presence
+  without editing code. WCAG compensation still runs afterwards.
+- **Industry export formats.** `--format` now also emits W3C DTCG
+  `tokens.json`, `tailwind.config.js`, and `_tokens.scss`; `all` = css + html +
+  json + tailwind + scss. `css` / `html` / `both` stay backward compatible.
+- **Numeric golden-value regression test.** `scripts/smoke_test.py` now locks 9
+  key tokens for `#2563EB` (normal) to exact hex values and asserts the three
+  critical WCAG AA contrast pairs (>= 4.5:1), catching silent numeric drift
+  like the old HSL→RGB channel-mapping bug.
+
 ## [1.3.1] - 2026-07-18
 
 ### Fixed

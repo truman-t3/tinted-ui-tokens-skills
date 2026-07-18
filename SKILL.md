@@ -1,7 +1,9 @@
 ---
 name: tinted-ui-tokens-skills
-display_name: 品牌色 UI 设计 Token skills
-description: "Generates a complete, production-ready design-token system from a single brand color, where every neutral surface (backgrounds, borders, text, shadows, semantic colors, gradients, icons, dark mode) carries a few percent of the brand's temperature instead of using pure neutral colors. Use when a user asks to generate, build, or design UI color tokens, a design system, CSS variables, a tinted color palette, or a branded theme from a brand color or hex, or wants to make an existing UI look more premium by fixing flat neutral colors. Trigger phrases include 给我生成一套设计Token, 用这个品牌色出一套配色, UI颜色太廉价了, 生成染色中性色系统, build a design system from #XXXXXX, tinted neutral palette."
+slug: tinted-ui-tokens-skills
+displayName: 品牌色 UI 设计 Token skills
+version: 1.4.0
+description: "从一个品牌色生成完整、可直接上线的设计 Token 系统：让每一个中性表面（背景、边框、文字、阴影、语义色、渐变、图标、暗色模式）都带上一小撮品牌色的温度，而不是使用纯中性色。当用户想用品牌色 / hex 生成、构建或设计 UI 颜色 Token、设计系统、CSS 变量、染色配色或品牌主题，或想通过修正扁平中性色让现有 UI 显得更高级时使用。触发语示例：给我生成一套设计Token、用这个品牌色出一套配色、UI颜色太廉价了、生成染色中性色系统、build a design system from #XXXXXX、tinted neutral palette。"
 agent_created: true
 ---
 
@@ -73,7 +75,11 @@ python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 - `--brand` (required): any hex color.
 - `--name` (optional): label shown in the preview header.
 - `--out` (optional): output folder, created if missing.
-- `--format css|html|both` (optional, default `both`).
+- `--format css|html|both|json|tailwind|scss|all` (optional, default `both`).
+  `json` = W3C DTCG tokens, `tailwind` = `tailwind.config.js`, `scss` = SCSS
+  variables, `all` = css + html + json + tailwind + scss.
+- `--tint-strength subtle|normal|strong` (optional, default `normal`): how
+  strongly every neutral leans toward the brand hue.
 
 The script writes `tokens.css` (drop-in `:root` + `[data-theme="dark"]`
 custom properties) and `preview.html` (self-contained live demo with a
@@ -92,16 +98,19 @@ specific tokens.
 To explain or adjust a value, consult `references/principles.md` (the "why"
 behind each token) before editing. Common tweaks:
 
-- More/less tint: change the blend factor in `build_tokens()` (e.g. `bg` uses
-  `0.035`; raise for a stronger brand presence, lower for subtler).
+- More/less tint: pass `--tint-strength subtle|normal|strong` (no code edit
+  needed). `strong` scales every blend factor up for a bolder brand presence.
 - Semantic nudge strength: the `0.06` mix factor in `semantic()`.
+- Contrast: every text-on-surface pair is auto-checked against WCAG AA and
+  nudged if needed — so you normally never have to fix readability by hand.
 
 ## Output contract
 
 `tokens.css` defines, for `:root` / `[data-theme="light"]` and
 `[data-theme="dark"]`:
 
-- `--color-brand`, `--color-brand-subtle`
+- `--color-brand`, `--color-brand-subtle`, `--color-on-brand`
+  (readable text/icon color to place ON `--color-brand`)
 - `--color-bg`, `--color-surface`, `--color-surface-2`, `--color-border`,
   `--color-border-strong`
 - `--color-text`, `--color-text-2`, `--color-text-muted`
@@ -109,7 +118,8 @@ behind each token) before editing. Common tweaks:
   `--color-success` / `-subtle`
 - `--shadow-sm`, `--shadow-md`, `--shadow-lg`
 
-No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere.
+No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere. Every
+text-on-surface pair passes WCAG AA (auto-checked + nudged if needed).
 
 ## References
 

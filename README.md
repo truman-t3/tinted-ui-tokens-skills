@@ -136,19 +136,29 @@ python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 - `--brand` (required): any hex color.
 - `--name` (optional): label shown in the preview header.
 - `--out` (optional): output folder, created if missing.
-- `--format css|html|both` (optional, default `both`).
+- `--format css|html|both|json|tailwind|scss|all` (optional, default `both`).
+  `json` = W3C DTCG tokens, `tailwind` = `tailwind.config.js`, `scss` = SCSS
+  variables, `all` = css + html + json + tailwind + scss.
+- `--tint-strength subtle|normal|strong` (optional, default `normal`): how
+  strongly every neutral leans toward the brand hue.
 
 ## Output
 
 `tokens.css` defines, for `:root` / `[data-theme="light"]` and `[data-theme="dark"]`:
 
-- `--color-brand`, `--color-brand-subtle`
+- `--color-brand`, `--color-brand-subtle`, `--color-on-brand`
+  (readable text/icon color to place ON `--color-brand`)
 - `--color-bg`, `--color-surface`, `--color-surface-2`, `--color-border`, `--color-border-strong`
 - `--color-text`, `--color-text-2`, `--color-text-muted`
 - `--color-error` / `-subtle`, `--color-warning` / `-subtle`, `--color-success` / `-subtle`
 - `--shadow-sm`, `--shadow-md`, `--shadow-lg`
 
-No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere.
+Other formats: `tokens.json` (W3C DTCG `color/*` + `shadow/*`), `tailwind.config.js`
+(`theme.extend.colors` + `boxShadow`), `_tokens.scss` (light + dark SCSS variables).
+
+No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere. Every text-on-surface
+pair passes WCAG AA — the generator measures contrast and nudges text if needed, so
+readability always wins.
 
 ## How It Works
 
@@ -315,19 +325,27 @@ python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 - `--brand`（必填）：任意 hex 颜色。
 - `--name`（可选）：预览页顶部显示的标签。
 - `--out`（可选）：输出目录，不存在则自动创建。
-- `--format css|html|both`（可选，默认 `both`）。
+- `--format css|html|both|json|tailwind|scss|all`（可选，默认 `both`）。
+  `json` = W3C DTCG tokens；`tailwind` = `tailwind.config.js`；`scss` = SCSS 变量；
+  `all` = css + html + json + tailwind + scss。
+- `--tint-strength subtle|normal|strong`（可选，默认 `normal`）：中性色向品牌色偏移的强度。
 
 ## 输出内容
 
 `tokens.css` 为 `:root` / `[data-theme="light"]` 与 `[data-theme="dark"]` 定义：
 
-- `--color-brand`、`--color-brand-subtle`
+- `--color-brand`、`--color-brand-subtle`、`--color-on-brand`
+  （写在 `--color-brand` 上的可读文字 / 图标色）
 - `--color-bg`、`--color-surface`、`--color-surface-2`、`--color-border`、`--color-border-strong`
 - `--color-text`、`--color-text-2`、`--color-text-muted`
 - `--color-error` / `-subtle`、`--color-warning` / `-subtle`、`--color-success` / `-subtle`
 - `--shadow-sm`、`--shadow-md`、`--shadow-lg`
 
-任何位置都不会输出纯 `#FFFFFF`、`#000000` 或 `#808080`。
+其他格式：`tokens.json`（W3C DTCG 的 `color/*` + `shadow/*`）、`tailwind.config.js`
+（`theme.extend.colors` + `boxShadow`）、`_tokens.scss`（明 / 暗 SCSS 变量）。
+
+任何位置都不会输出纯 `#FFFFFF`、`#000000` 或 `#808080`。文字与底色的每一组组合都通过
+WCAG AA——生成器会实测对比度并在不达标时自动微调文字，可读性始终优先。
 
 ## 工作原理
 

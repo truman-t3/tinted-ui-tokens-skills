@@ -3,19 +3,31 @@
 generate_tokens.py - Tinted UI Token generator
 ================================================
 
-Given a single brand color, produce a complete design-token system where
-EVERY neutral surface carries a little of the brand's temperature - the core
-idea from "你的UI廉价，错在颜色" (cheap UI is a color problem).
+Given a single brand color, produce a complete, production-ready design-token
+system where EVERY neutral surface carries a little of the brand's temperature
+- the core idea from "你的UI廉价，错在颜色" (cheap UI is a color problem).
 
-Outputs:
-  - tokens.css     : drop-in :root + [data-theme="dark"] custom properties
-  - preview.html   : self-contained live demo (cards, error form, gradient,
-                     icons, light/dark toggle) that inlines the same tokens
+Outputs (selected via --format):
+  - tokens.css      : drop-in :root + [data-theme="dark"] custom properties
+  - preview.html    : self-contained live demo (cards, error form, gradient,
+                      icons, brand button, light/dark toggle) inlining tokens
+  - tokens.json     : W3C DTCG design-token format (color/* + shadow/*)
+  - tailwind.config.js : theme.extend.colors + boxShadow
+  - _tokens.scss    : SCSS variables (light + dark)
+
+Quality guarantees
+------------------
+* No pure #FFFFFF / #000000 / #808080 anywhere.
+* Every text-on-surface pair is checked against WCAG 2.1 contrast and, if it
+  falls below the AA target, the text is nudged along its HSL lightness axis
+  until it passes - so readability always wins, and the brand hue-lean is
+  preserved wherever L does not hit an extreme.
 
 Usage:
   python generate_tokens.py --brand "#2563EB" --out ./out
   python generate_tokens.py --brand "#C4502A" --name "Acme" --out ./out
-  python generate_tokens.py --brand "#16A34A" --format css   # css only
+  python generate_tokens.py --brand "#16A34A" --format json
+  python generate_tokens.py --brand "#2563EB" --tint-strength strong
 
 The math is brand-agnostic: temperature is derived by blending every neutral
 ramp toward the brand hue, so any brand color yields a coherent system.
@@ -23,6 +35,7 @@ ramp toward the brand hue, so any brand color yields a coherent system.
 
 import argparse
 import datetime
+import json
 import os
 import sys
 
@@ -112,10 +125,62 @@ def classify_temperature(hue):
 
 
 # --------------------------------------------------------------------------
+# WCAG 2.1 contrast
+# --------------------------------------------------------------------------
+
+def relative_luminance(rgb):
+    def chan(c):
+        c = c / 255.0
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    r, g, b = (chan(x) for x in rgb)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(rgb1, rgb2):
+    l1 = relative_luminance(rgb1)
+    l2 = relative_luminance(rgb2)
+    lighter, darker = max(l1, l2), min(l1, l2)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def ensure_contrast(text_rgb, bg_rgb, target, is_dark):
+    """Nudge ``text_rgb`` along HSL lightness until it reaches ``target``
+    contrast against ``bg_rgb``. Light themes darken; dark themes lighten.
+    Returns an rgb tuple (may be unchanged if already passing)."""
+    if contrast_ratio(text_rgb, bg_rgb) >= target:
+        return text_rgb
+    h, s, l = rgb_to_hsl(text_rgb)
+    step = 0.015
+    for _ in range(70):
+        new_l = l - step if not is_dark else l + step
+        new_l = clamp(new_l)
+        cand = hsl_to_rgb(h, s, new_l)
+        if contrast_ratio(cand, bg_rgb) >= target:
+            return cand
+        l = new_l
+    # worst case: return the most extreme safe value we reached
+    return hsl_to_rgb(h, s, clamp(l))
+
+
+# --------------------------------------------------------------------------
 # Token generation
 # --------------------------------------------------------------------------
 
-def build_tokens(brand_hex):
+TINT_PRESETS = {"subtle": 0.6, "normal": 1.0, "strong": 1.6}
+
+
+def build_tokens(brand_hex, tint_strength="normal"):
+    if isinstance(tint_strength, str):
+        scale = TINT_PRESETS.get(tint_strength.lower(), 1.0)
+    else:
+        scale = float(tint_strength)
+    if scale <= 0:
+        raise ValueError("tint-strength must be > 0")
+
+    def bf(base_factor):
+        """Scaled blend factor."""
+        return base_factor * scale
+
     brand = hex_to_rgb(brand_hex)
     bh, bs, bl = rgb_to_hsl(brand)
     temperature = classify_temperature(bh)
@@ -125,24 +190,24 @@ def build_tokens(brand_hex):
     brand_subtle_light = mix(brand, white, 0.86)
 
     # ---- LIGHT neutrals: blend each gray ramp toward brand ----
-    bg = mix((248, 248, 248), brand, 0.035)
-    surface = mix((255, 255, 255), brand, 0.018)
-    surface_2 = mix((241, 241, 241), brand, 0.05)
-    border = mix((229, 229, 229), brand, 0.07)
-    border_strong = mix((199, 199, 199), brand, 0.11)
-    text = mix((17, 17, 17), brand, 0.16)
-    text_2 = mix((74, 74, 74), brand, 0.16)
-    text_muted = mix((154, 154, 154), brand, 0.18)
+    bg = mix((248, 248, 248), brand, bf(0.035))
+    surface = mix((255, 255, 255), brand, bf(0.018))
+    surface_2 = mix((241, 241, 241), brand, bf(0.05))
+    border = mix((229, 229, 229), brand, bf(0.07))
+    border_strong = mix((199, 199, 199), brand, bf(0.11))
+    text = mix((17, 17, 17), brand, bf(0.16))
+    text_2 = mix((74, 74, 74), brand, bf(0.16))
+    text_muted = mix((154, 154, 154), brand, bf(0.18))
 
     # ---- DARK neutrals: tinted dark, not pure black ----
-    d_bg = mix((15, 17, 23), brand, 0.10)
-    d_surface = mix((22, 27, 39), brand, 0.08)
-    d_surface2 = mix((28, 34, 48), brand, 0.08)
-    d_border = mix((30, 39, 56), brand, 0.10)
-    d_border_strong = mix((45, 56, 78), brand, 0.10)
-    d_text = mix((232, 237, 245), brand, 0.04)
-    d_text2 = mix((138, 154, 181), brand, 0.06)
-    d_text_muted = mix((122, 139, 160), brand, 0.08)
+    d_bg = mix((15, 17, 23), brand, bf(0.10))
+    d_surface = mix((22, 27, 39), brand, bf(0.08))
+    d_surface2 = mix((28, 34, 48), brand, bf(0.08))
+    d_border = mix((30, 39, 56), brand, bf(0.10))
+    d_border_strong = mix((45, 56, 78), brand, bf(0.10))
+    d_text = mix((232, 237, 245), brand, bf(0.04))
+    d_text2 = mix((138, 154, 181), brand, bf(0.06))
+    d_text_muted = mix((122, 139, 160), brand, bf(0.08))
     brand_subtle_dark = mix(brand, d_surface, 0.80)
 
     # ---- Semantic colors: nudge toward brand temperature ----
@@ -162,6 +227,21 @@ def build_tokens(brand_hex):
     d_error_subtle = mix(error, d_surface2, 0.82)
     d_warning_subtle = mix(warning, d_surface2, 0.82)
     d_success_subtle = mix(success, d_surface2, 0.82)
+
+    # ---- WCAG contrast compensation (readability always wins) ----
+    # Targets: normal text AA = 4.5:1; secondary/muted AA-large = 3:1.
+    text = ensure_contrast(text, bg, 4.5, is_dark=False)
+    text_2 = ensure_contrast(text_2, surface, 4.5, is_dark=False)
+    text_muted = ensure_contrast(text_muted, surface, 3.0, is_dark=False)
+    d_text = ensure_contrast(d_text, d_bg, 4.5, is_dark=True)
+    d_text2 = ensure_contrast(d_text2, d_surface, 4.5, is_dark=True)
+    d_text_muted = ensure_contrast(d_text_muted, d_surface, 3.0, is_dark=True)
+
+    # ---- on-brand text: readable color placed ON the brand color ----
+    near_white = mix(white, brand, 0.04)
+    near_black = mix((17, 17, 17), brand, 0.10)
+    on_brand = near_white if contrast_ratio(near_white, brand) >= contrast_ratio(near_black, brand) \
+        else near_black
 
     # ---- Shadows: brand hue at low alpha, never pure black ----
     shadow_sm = (
@@ -193,6 +273,7 @@ def build_tokens(brand_hex):
 
         "BRAND": rgb_to_hex(brand),
         "BRAND_SUBTLE": rgb_to_hex(brand_subtle_light),
+        "ON_BRAND": rgb_to_hex(on_brand),
         "BG": rgb_to_hex(bg),
         "SURFACE": rgb_to_hex(surface),
         "SURFACE2": rgb_to_hex(surface_2),
@@ -239,7 +320,8 @@ CSS_TEMPLATE = """/* ===========================================================
    Generated : %%META_DATE%%
    Method: every neutral surface is blended a few percent toward the brand
    hue, so the brand "flows through" the system instead of sitting on top.
-   No pure #FFFFFF / #000000 / #808080 anywhere.
+   No pure #FFFFFF / #000000 / #808080 anywhere. Text on each surface is
+   checked against WCAG AA and nudged if needed, so readability always wins.
    ========================================================================== */
 
 :root,
@@ -247,6 +329,7 @@ CSS_TEMPLATE = """/* ===========================================================
   /* Brand */
   --color-brand:        %%BRAND%%;
   --color-brand-subtle: %%BRAND_SUBTLE%%;
+  --color-on-brand:     %%ON_BRAND%%;   /* readable text placed ON --color-brand */
 
   /* Surfaces - tinted by brand */
   --color-bg:           %%BG%%;
@@ -255,7 +338,7 @@ CSS_TEMPLATE = """/* ===========================================================
   --color-border:       %%BORDER%%;
   --color-border-strong:%%BORDER_STRONG%%;
 
-  /* Text - near-black/near-white with a hue lean */
+  /* Text - near-black/near-white with a hue lean (WCAG AA checked) */
   --color-text:         %%TEXT%%;
   --color-text-2:       %%TEXT2%%;
   --color-text-muted:   %%TEXT_MUTED%%;
@@ -276,6 +359,7 @@ CSS_TEMPLATE = """/* ===========================================================
 
 [data-theme="dark"] {
   --color-brand-subtle: %%D_BRAND_SUBTLE%%;
+  --color-on-brand:     %%ON_BRAND%%;
 
   --color-bg:           %%D_BG%%;
   --color-surface:      %%D_SURFACE%%;
@@ -364,6 +448,13 @@ body {
 }
 .hero h2 { margin: 0 0 10px; font-size: 1.5rem; color: var(--color-text); }
 .hero p { margin: 0; max-width: 560px; color: var(--color-text-2); line-height: 1.6; font-size: .92rem; }
+.btn-primary {
+  margin-top: 22px; display: inline-block; border: none; cursor: pointer;
+  background: var(--color-brand); color: var(--color-on-brand);
+  border-radius: 9px; padding: 12px 22px; font-size: .92rem; font-weight: 600;
+  box-shadow: var(--shadow-md); transition: filter .2s ease;
+}
+.btn-primary:hover { filter: brightness(1.06); }
 .field { margin-top: 18px; }
 .field label { display: block; font-size: .8rem; color: var(--color-text-2); margin-bottom: 6px; }
 .input {
@@ -406,6 +497,7 @@ body {
     <div class="hero">
       <h2>品牌色，流进整个系统</h2>
       <p>背景、表面、边框、文字、阴影、语义色、渐变、图标 —— 每一层都带着同一份品牌色温。没有纯中性色，没有死黑阴影。</p>
+      <button class="btn-primary">Get started</button>
     </div>
 
     <div class="card">
@@ -465,44 +557,174 @@ def render_preview(t, name):
 
 
 # --------------------------------------------------------------------------
+# Export renderers (DTCG JSON / Tailwind / SCSS)
+# --------------------------------------------------------------------------
+
+# flat token key -> friendly leaf name used in tailwind/scss
+_LEAF = {
+    "BRAND": "brand", "BRAND_SUBTLE": "brand-subtle", "ON_BRAND": "on-brand",
+    "BG": "bg", "SURFACE": "surface", "SURFACE2": "surface-2",
+    "BORDER": "border", "BORDER_STRONG": "border-strong",
+    "TEXT": "text", "TEXT2": "text-2", "TEXT_MUTED": "text-muted",
+    "ERROR": "error", "ERROR_SUBTLE": "error-subtle",
+    "WARNING": "warning", "WARNING_SUBTLE": "warning-subtle",
+    "SUCCESS": "success", "SUCCESS_SUBTLE": "success-subtle",
+}
+
+
+def render_json(t):
+    """W3C DTCG design-token format: nested color/* + shadow/* groups."""
+    colors = {}
+    shadows = {}
+    for k, v in t.items():
+        if k.startswith("META_"):
+            continue
+        if k.startswith("SHADOW"):
+            shadows[k.lower()] = {"$type": "shadow", "$value": v}
+        elif k.startswith("D_"):
+            colors.setdefault("dark", {})[k[2:].lower()] = {"$type": "color", "$value": v}
+        else:
+            colors[k.lower()] = {"$type": "color", "$value": v}
+    tree = {
+        "$description": f"Tinted UI tokens for brand {t['META_BRAND']} ({t['META_TEMP']})",
+        "color": colors,
+        "shadow": shadows,
+    }
+    return json.dumps(tree, indent=2, ensure_ascii=False) + "\n"
+
+
+def render_tailwind(t):
+    tw_colors = {}
+    tw_shadow = {}
+    for k, name in _LEAF.items():
+        if k in t:
+            tw_colors[name] = t[k]
+    for k in t:
+        if k.startswith("D_"):
+            tw_colors["dark-" + k[2:].lower()] = t[k]
+    for k in t:
+        if k.startswith("SHADOW"):
+            tw_shadow[k.lower()] = t[k]
+        elif k.startswith("D_SHADOW"):
+            tw_shadow["dark-" + k[2:].lower()] = t[k]
+    lines = [
+        "/** @type {import('tailwindcss').Config} */",
+        "module.exports = {",
+        "  theme: {",
+        "    extend: {",
+        "      colors: {",
+    ]
+    for name, val in tw_colors.items():
+        lines.append(f'        "{name}": "{val}",')
+    lines.append("      },")
+    lines.append("      boxShadow: {")
+    for name, val in tw_shadow.items():
+        lines.append(f'        "{name}": "{val}",')
+    lines.append("      },")
+    lines.append("    },")
+    lines.append("  },")
+    lines.append("}")
+    return "\n".join(lines) + "\n"
+
+
+def render_scss(t):
+    out = ["// Tinted UI Tokens - generated by tinted-ui-tokens-skills", ""]
+    out.append("// ---- Light theme ----")
+    for k, name in _LEAF.items():
+        if k in t:
+            out.append(f"$color-{name}: {t[k]};")
+    out.append("")
+    out.append("// ---- Shadows (light) ----")
+    for k in t:
+        if k.startswith("SHADOW"):
+            out.append(f"$shadow-{k.lower()}: {t[k]};")
+    out.append("")
+    out.append("// ---- Dark theme ----")
+    for k in t:
+        if k.startswith("D_"):
+            out.append(f"$color-dark-{k[2:].lower()}: {t[k]};")
+    for k in t:
+        if k.startswith("D_SHADOW"):
+            out.append(f"$shadow-dark-{k[2:].lower()}: {t[k]};")
+    out.append("")
+    out.append("// Map light vars onto [data-theme=\"dark\"] (drop-in):")
+    out.append("@mixin tinted-dark {")
+    for k in t:
+        if k.startswith("D_"):
+            out.append(f"  --color-{k[2:].lower()}: $color-dark-{k[2:].lower()};")
+    out.append("}")
+    return "\n".join(out) + "\n"
+
+
+# --------------------------------------------------------------------------
 # CLI
 # --------------------------------------------------------------------------
+
+FORMATS = ["css", "html", "both", "json", "tailwind", "scss", "all"]
+
 
 def main():
     ap = argparse.ArgumentParser(description="Generate a tinted UI token system from a brand color.")
     ap.add_argument("--brand", required=True, help="Brand color hex, e.g. #2563EB")
     ap.add_argument("--name", default="Untitled", help="Product / brand name for the preview")
     ap.add_argument("--out", default=".", help="Output directory")
-    ap.add_argument("--format", choices=["css", "html", "both"], default="both",
-                    help="What to emit (default: both)")
+    ap.add_argument("--format", choices=FORMATS, default="both",
+                    help="What to emit (default: both = css+html; 'all' = css+html+json+tailwind+scss)")
+    ap.add_argument("--tint-strength", choices=["subtle", "normal", "strong"], default="normal",
+                    help="How strongly neutrals lean toward the brand (default: normal)")
     args = ap.parse_args()
 
     try:
-        tokens = build_tokens(args.brand)
+        tokens = build_tokens(args.brand, args.tint_strength)
     except ValueError as e:
         print(f"error: {e}", file=sys.stderr)
         return 2
 
     os.makedirs(args.out, exist_ok=True)
+    fmt = args.format
 
-    if args.format in ("css", "both"):
+    if fmt in ("css", "both", "all"):
         css_path = os.path.join(args.out, "tokens.css")
         with open(css_path, "w", encoding="utf-8") as f:
             f.write(render_css(tokens))
         print(f"wrote {css_path}")
 
-    if args.format in ("html", "both"):
+    if fmt in ("html", "both", "all"):
         html_path = os.path.join(args.out, "preview.html")
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(render_preview(tokens, args.name))
         print(f"wrote {html_path}")
 
-    print(f"\nbrand {tokens['META_BRAND']} -> temperature: {tokens['META_TEMP']}")
+    if fmt in ("json", "all"):
+        json_path = os.path.join(args.out, "tokens.json")
+        with open(json_path, "w", encoding="utf-8") as f:
+            f.write(render_json(tokens))
+        print(f"wrote {json_path}")
+
+    if fmt in ("tailwind", "all"):
+        tw_path = os.path.join(args.out, "tailwind.config.js")
+        with open(tw_path, "w", encoding="utf-8") as f:
+            f.write(render_tailwind(tokens))
+        print(f"wrote {tw_path}")
+
+    if fmt in ("scss", "all"):
+        scss_path = os.path.join(args.out, "_tokens.scss")
+        with open(scss_path, "w", encoding="utf-8") as f:
+            f.write(render_scss(tokens))
+        print(f"wrote {scss_path}")
+
+    # WCAG report
+    light = contrast_ratio(hex_to_rgb(tokens["TEXT"]), hex_to_rgb(tokens["SURFACE"]))
+    dark = contrast_ratio(hex_to_rgb(tokens["D_TEXT"]), hex_to_rgb(tokens["D_BG"]))
+    onb = contrast_ratio(hex_to_rgb(tokens["ON_BRAND"]), hex_to_rgb(tokens["BRAND"]))
+    print(f"\nbrand {tokens['META_BRAND']} -> temperature: {tokens['META_TEMP']} "
+          f"(tint: {args.tint_strength})")
     print(f"  bg      {tokens['BG']}")
     print(f"  surface {tokens['SURFACE']}")
     print(f"  text    {tokens['TEXT']}")
-    print(f"  border  {tokens['BORDER']}")
-    print(f"  dark bg {tokens['D_BG']}")
+    print(f"  on-brand {tokens['ON_BRAND']} (on brand {tokens['BRAND']})")
+    print(f"  contrast  light text/surface {light:.2f}:1   "
+          f"dark text/bg {dark:.2f}:1   on-brand {onb:.2f}:1")
     return 0
 
 

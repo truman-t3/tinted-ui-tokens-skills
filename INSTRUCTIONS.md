@@ -66,7 +66,11 @@ Flags · 参数：
 - `--brand` (required): any hex color. · 必填，任意 hex 颜色。
 - `--name` (optional): label shown in the preview header. · 预览页顶部标签。
 - `--out` (optional): output folder, created if missing. · 输出目录，自动创建。
-- `--format css|html|both` (optional, default `both`). · 输出格式。
+- `--format css|html|both|json|tailwind|scss|all` (optional, default `both`).
+  `json` = W3C DTCG tokens；`tailwind` = `tailwind.config.js`；`scss` = SCSS
+  变量；`all` = css + html + json + tailwind + scss。· 输出格式。
+- `--tint-strength subtle|normal|strong` (optional, default `normal`)：中性色
+  向品牌色偏移的强度。· 染色强弱。
 
 Outputs · 产物：
 
@@ -91,24 +95,32 @@ to regenerate with a different brand color or to hand-tune specific tokens.
 Consult [`references/principles.md`](references/principles.md) before editing. Common tweaks:
 改之前先读 [`references/principles.md`](references/principles.md)。常见调整：
 
-- More/less tint: change the blend factor in `build_tokens()` (e.g. `bg` uses `0.035`).
-  · 染色强弱：改 `build_tokens()` 的混合系数（`bg` 用 `0.035`）。
+- More/less tint: pass `--tint-strength subtle|normal|strong` (no code edit needed).
+  `strong` scales every blend factor up for a bolder brand presence.
+  · 染色强弱：传 `--tint-strength subtle|normal|strong` 即可，无需改代码；
+  `strong` 会整体加大混合系数，品牌感更强。
 - Semantic nudge strength: the `0.06` mix factor in `semantic()`.
   · 语义色偏移幅度：`semantic()` 里的 `0.06` 混合系数。
+- Contrast: every text-on-surface pair is auto-checked against WCAG AA and
+  nudged if needed — you normally never fix readability by hand.
+  · 对比度：文字与底色的组合会自动按 WCAG AA 校验并在需要时微调，通常无需手动修可读性。
 
 ## Output contract · 输出约定
 
 `tokens.css` defines, for `:root` / `[data-theme="light"]` and `[data-theme="dark"]`:
 `tokens.css` 为 `:root` / `[data-theme="light"]` 与 `[data-theme="dark"]` 定义：
 
-- `--color-brand`, `--color-brand-subtle`
+- `--color-brand`, `--color-brand-subtle`, `--color-on-brand`
+  (readable text/icon color to place ON `--color-brand`)
 - `--color-bg`, `--color-surface`, `--color-surface-2`, `--color-border`, `--color-border-strong`
 - `--color-text`, `--color-text-2`, `--color-text-muted`
 - `--color-error` / `-subtle`, `--color-warning` / `-subtle`, `--color-success` / `-subtle`
 - `--shadow-sm`, `--shadow-md`, `--shadow-lg`
 
-No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere.
-任何位置都不会输出纯 `#FFFFFF`、`#000000` 或 `#808080`。
+No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere. Every
+text-on-surface pair passes WCAG AA (auto-checked + nudged if needed).
+任何位置都不会输出纯 `#FFFFFF`、`#000000` 或 `#808080`。文字与底色组合均通过
+WCAG AA（自动校验，不达标则自动微调），可读性始终优先。
 
 ## References · 参考
 

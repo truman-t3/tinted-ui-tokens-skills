@@ -19,6 +19,11 @@ Checks
    no hue to tint with, so pure neutrals in their output are acceptable here -
    we only assert robustness, not the "no pure neutral" contract.
 5. Invalid input is rejected with a non-zero exit code.
+6. Golden-value regression guard: for the reference brand #2563EB (normal
+   strength), key light + dark tokens are locked to exact hex values, and the
+   critical WCAG AA contrast pairs (text/surface, dark text/bg, on-brand) must
+   stay >= 4.5:1. This catches silent numeric drift such as the old
+   HSL->RGB channel-mapping bug.
 
 Usage
 -----
@@ -33,6 +38,25 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 GEN = HERE / "generate_tokens.py"
+
+# Import the generator's WCAG helpers so numeric/golden assertions stay exact.
+sys.path.insert(0, str(HERE))
+from generate_tokens import contrast_ratio, hex_to_rgb  # noqa: E402
+
+# Frozen key-token values for the reference brand (#2563EB, normal strength).
+# Captured after the WCAG-compensation change landed, then locked. If a valid
+# code change shifts a value, update these deliberately (not silently).
+GOLDEN = {
+    "BG": "#F1F3F8",
+    "SURFACE": "#FBFCFF",
+    "TEXT": "#141E34",
+    "BORDER": "#D8DCE5",
+    "D_BG": "#11192C",
+    "D_SURFACE": "#172137",
+    "D_TEXT": "#E0E7F5",
+    "D_BORDER": "#1F2D4A",
+    "ON-BRAND": "#F6F9FE",
+}
 
 # brand -> expected temperature label (None = don't assert the label)
 CHROMATIC = {
@@ -63,7 +87,7 @@ def assert_valid_hex(css, brand):
 
 
 def grab(css, var):
-    m = re.search(rf"--color-{var}:\s*(#[0-9a-fA-F]{{6}})", css)
+    m = re.search(rf"--color-{var.lower()}:\s*(#[0-9a-fA-F]{{6}})", css)
     assert m, f"--color-{var} not found"
     return m.group(1)
 
@@ -120,16 +144,55 @@ def check_invalid():
             print(f"  OK invalid  {brand!r} -> rejected (exit {r.returncode})")
 
 
+def grab_dark(css, key):
+    """Dark-theme tokens share the same CSS variable name as light (e.g.
+    D_BG -> --color-bg). Isolate the [data-theme="dark"] block and read it."""
+    var = key[2:].lower()
+    m = re.search(r'\[data-theme="dark"\]\s*\{(.*?)\}', css, re.S)
+    assert m, "dark theme block not found"
+    mm = re.search(rf'--color-{var}:\s*(#[0-9a-fA-F]{{6}})', m.group(1))
+    assert mm, f"--color-{var} not found in dark theme"
+    return mm.group(1)
+
+
+def check_golden():
+    """Numeric regression guard. Locks key tokens for the reference brand
+    (#2563EB, normal) and asserts WCAG AA contrast on the critical pairs.
+    Catches silent numeric drift like the old HSL->RGB channel-mapping bug."""
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "gold"
+        assert run_gen("#2563EB", out, ["--format", "css"]).returncode == 0
+        css = (out / "tokens.css").read_text(encoding="utf-8")
+
+        for key, expected in GOLDEN.items():
+            got = grab_dark(css, key) if key.startswith("D_") else grab(css, key)
+            assert got.lower() == expected.lower(), \
+                f"[#2563EB golden] --color-{key} = {got}, expected {expected}"
+
+        # WCAG AA on the critical pairs (>= 4.5:1).
+        light = contrast_ratio(hex_to_rgb(grab(css, "TEXT")), hex_to_rgb(grab(css, "SURFACE")))
+        dark = contrast_ratio(hex_to_rgb(grab_dark(css, "D_TEXT")), hex_to_rgb(grab_dark(css, "D_BG")))
+        onbrand = contrast_ratio(hex_to_rgb(grab(css, "ON-BRAND")), hex_to_rgb(grab(css, "BRAND")))
+        assert light >= 4.5, f"light text/surface contrast {light:.2f} < 4.5"
+        assert dark >= 4.5, f"dark text/bg contrast {dark:.2f} < 4.5"
+        assert onbrand >= 4.5, f"on-brand contrast {onbrand:.2f} < 4.5"
+
+        print(f"  OK golden  #2563EB -> {len(GOLDEN)} tokens locked; "
+              f"contrast light {light:.2f} / dark {dark:.2f} / on-brand {onbrand:.2f}")
+
+
 def main():
     print("smoke_test: chromatic brands")
     check_chromatic()
     print("smoke_test: semantic sanity")
     check_semantic()
+    print("smoke_test: golden values + WCAG AA contrast")
+    check_golden()
     print("smoke_test: extreme / degenerate brands")
     check_extreme()
     print("smoke_test: invalid input rejection")
     check_invalid()
-    print("\nPASS: generator smoke + robustness tests OK")
+    print("\nPASS: generator smoke + robustness + golden + contrast tests OK")
     return 0
 
 

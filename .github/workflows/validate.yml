@@ -31,14 +31,15 @@ jobs:
         # required fields, hyphen-case name, no angle brackets in description.
         run: python scripts/validate_skill.py .
 
-      - name: Generator smoke + robustness tests
+      - name: Generator smoke + robustness + golden + contrast tests
         # Same script contributors run locally, so "passes CI" == "passes
         # scripts/smoke_test.py". Covers: cool/warm/balanced brands produce
         # non-empty tokens.css + preview.html; every --color-* value is valid
         # hex; semantic sanity (guards the HSL->RGB regression where a blue
-        # brand emitted a blue "error"); extreme/degenerate brands
-        # (black/white/gray/short/lowercase) don't crash; invalid input is
-        # rejected with a non-zero exit code.
+        # brand emitted a blue "error"); 9 frozen golden token values for
+        # #2563EB plus WCAG AA contrast assertions on text/surface, dark text/bg
+        # and on-brand; extreme/degenerate brands (black/white/gray/short/
+        # lowercase) don't crash; invalid input is rejected with a non-zero exit.
         run: python scripts/smoke_test.py
 
       - name: Summary

@@ -23,7 +23,12 @@ through* it.
 3. **Text hierarchy** — primary text is near-black with a hue lean, not `#000`.
    Muted text follows the brand's warm/cool direction, not flat gray. Values
    still pass WCAG AA at body sizes — temperature is added inside the existing
-   contrast budget, never at the cost of readability.
+   contrast budget, never at the cost of readability. **The generator now
+   enforces this automatically**: every text-on-surface pair is measured with
+   the WCAG 2.1 relative-luminance formula and, if it falls below AA
+   (4.5:1 normal / 3:1 muted), the text is nudged along its HSL lightness axis
+   until it passes — so readability always wins, and the brand hue-lean is kept
+   wherever lightness does not hit an extreme.
 
 ## Three extensions (where systems usually break)
 
