@@ -23,7 +23,7 @@ runs anywhere Python 3.10+ is available. The instructions live in
 [`INSTRUCTIONS.md`](INSTRUCTIONS.md) and are wired into each agent via the docs in
 [`agents/`](agents/).
 
-![Light and dark UI generated from brand color #2563EB](assets/preview.svg)
+![Light and dark UI generated from brand color #2563EB](assets/preview.png)
 
 > Above: light + dark output for brand `#2563EB` (cool). Every surface, border,
 > text layer, and semantic color is tinted toward the brand — run the generator
@@ -66,6 +66,30 @@ goes*. Full wiring steps are in [`agents/`](agents/).
 
 > All agents share the same engine and the same [`INSTRUCTIONS.md`](INSTRUCTIONS.md).
 > Once cloned, point your agent's rule file at it (see the per-agent docs) and you are done.
+
+## Quick Install
+
+Clone the repo once, then point your agent at the matching rule file. Every agent
+shares the same engine and [`INSTRUCTIONS.md`](INSTRUCTIONS.md).
+
+```bash
+git clone https://github.com/truman-t3/tinted-ui-tokens-skills ./tinted-ui-tokens-skills
+```
+
+| Agent | Wire it up |
+| --- | --- |
+| **Claude Code** | Move the cloned folder to `~/.claude/skills/tinted-ui-tokens-skills/` (the `SKILL.md` is picked up automatically) |
+| **Cursor** | `cp tinted-ui-tokens-skills/agents/cursor/tinted-ui-tokens-skills.mdc .cursor/rules/` |
+| **OpenAI Codex** | `cp tinted-ui-tokens-skills/agents/codex/AGENTS.md AGENTS.md` |
+| **Cline** | `cp tinted-ui-tokens-skills/agents/cline/.clinerules .cline/rules/tinted-ui-tokens-skills` |
+| **Aider** | `aider --read tinted-ui-tokens-skills/agents/aider/CONVENTIONS.md` |
+| **WindSurf** | `cp tinted-ui-tokens-skills/agents/windsurf/.windsurfrules .windsurfrules` |
+| **GitHub Copilot** | `cp tinted-ui-tokens-skills/agents/copilot/copilot-instructions.md .github/copilot-instructions.md` |
+| **Gemini CLI** | `cp tinted-ui-tokens-skills/agents/gemini-cli/GEMINI.md GEMINI.md` |
+| **WorkBuddy** | Copy the repo to `~/.workbuddy/skills/tinted-ui-tokens-skills/`, or install from the Skills panel |
+
+> Full per-agent steps (global vs project scope, multiple projects) are in
+> [`agents/`](agents/).
 
 ## Quick Start (any agent)
 
@@ -180,7 +204,7 @@ WorkBuddy 中使用。
 引擎（`scripts/generate_tokens.py`）仅用 Python 标准库，Python 3.10+ 任意系统可跑。
 指令在 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)，各 agent 的接入方式见 [`agents/`](agents/)。
 
-![由品牌色 #2563EB 生成的明暗两套 UI](assets/preview.svg)
+![由品牌色 #2563EB 生成的明暗两套 UI](assets/preview.png)
 
 > 上图：品牌色 `#2563EB`（冷色）的明 / 暗两套输出。每个表面、边框、文字层级与语义色
 > 都朝品牌色方向染色——运行生成器即可得到带真实明暗切换的 `preview.html`。
@@ -221,6 +245,29 @@ WorkBuddy 中使用。
 
 > 所有 agent 共用同一个引擎与同一份 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)。克隆仓库后，
 > 把指令粘贴进你所用 agent 的规则文件即可（见各 agent 文档）。
+
+## 一键安装
+
+先把仓库克隆下来，再把对应的规则文件指向你用的 agent。所有 agent 共用同一个引擎
+与 [`INSTRUCTIONS.md`](INSTRUCTIONS.md)。
+
+```bash
+git clone https://github.com/truman-t3/tinted-ui-tokens-skills ./tinted-ui-tokens-skills
+```
+
+| Agent | 接入方式 |
+| --- | --- |
+| **Claude Code** | 把克隆下来的文件夹移到 `~/.claude/skills/tinted-ui-tokens-skills/`（`SKILL.md` 会被自动识别） |
+| **Cursor** | `cp tinted-ui-tokens-skills/agents/cursor/tinted-ui-tokens-skills.mdc .cursor/rules/` |
+| **OpenAI Codex** | `cp tinted-ui-tokens-skills/agents/codex/AGENTS.md AGENTS.md` |
+| **Cline** | `cp tinted-ui-tokens-skills/agents/cline/.clinerules .cline/rules/tinted-ui-tokens-skills` |
+| **Aider** | `aider --read tinted-ui-tokens-skills/agents/aider/CONVENTIONS.md` |
+| **WindSurf** | `cp tinted-ui-tokens-skills/agents/windsurf/.windsurfrules .windsurfrules` |
+| **GitHub Copilot** | `cp tinted-ui-tokens-skills/agents/copilot/copilot-instructions.md .github/copilot-instructions.md` |
+| **Gemini CLI** | `cp tinted-ui-tokens-skills/agents/gemini-cli/GEMINI.md GEMINI.md` |
+| **WorkBuddy** | 把仓库复制到 `~/.workbuddy/skills/tinted-ui-tokens-skills/`，或在技能面板安装 |
+
+> 各 agent 的完整步骤（全局 vs 项目级、多个项目）见 [`agents/`](agents/)。
 
 ## 快速开始（任意 agent）
 
