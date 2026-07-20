@@ -2,7 +2,7 @@
 name: tinted-ui-tokens-skills
 slug: tinted-ui-tokens-skills
 displayName: 品牌色 UI 设计 Token skills
-version: 1.4.0
+version: 1.4.1
 description: "从一个品牌色生成完整、可直接上线的设计 Token 系统：让每一个中性表面（背景、边框、文字、阴影、语义色、渐变、图标、暗色模式）都带上一小撮品牌色的温度，而不是使用纯中性色。当用户想用品牌色 / hex 生成、构建或设计 UI 颜色 Token、设计系统、CSS 变量、染色配色或品牌主题，或想通过修正扁平中性色让现有 UI 显得更高级时使用。触发语示例：给我生成一套设计Token、用这个品牌色出一套配色、UI颜色太廉价了、生成染色中性色系统、build a design system from #XXXXXX、tinted neutral palette。"
 agent_created: true
 ---

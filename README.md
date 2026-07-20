@@ -147,7 +147,8 @@ python scripts/generate_tokens.py --brand "#2563EB" --name "Acme" --out "./out"
 `tokens.css` defines, for `:root` / `[data-theme="light"]` and `[data-theme="dark"]`:
 
 - `--color-brand`, `--color-brand-subtle`, `--color-on-brand`
-  (readable text/icon color to place ON `--color-brand`)
+  (readable text/icon color to place ON `--color-brand`; WCAG AA-compensated
+  to >= 4.5:1 on every brand hue, like body text)
 - `--color-bg`, `--color-surface`, `--color-surface-2`, `--color-border`, `--color-border-strong`
 - `--color-text`, `--color-text-2`, `--color-text-muted`
 - `--color-error` / `-subtle`, `--color-warning` / `-subtle`, `--color-success` / `-subtle`
@@ -157,8 +158,8 @@ Other formats: `tokens.json` (W3C DTCG `color/*` + `shadow/*`), `tailwind.config
 (`theme.extend.colors` + `boxShadow`), `_tokens.scss` (light + dark SCSS variables).
 
 No pure `#FFFFFF`, `#000000`, or `#808080` is emitted anywhere. Every text-on-surface
-pair passes WCAG AA — the generator measures contrast and nudges text if needed, so
-readability always wins.
+pair **and `--color-on-brand`** passes WCAG AA — the generator measures contrast and
+nudges text (and the on-brand color) if needed, so readability always wins.
 
 ## How It Works
 

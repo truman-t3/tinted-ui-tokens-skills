@@ -238,10 +238,15 @@ def build_tokens(brand_hex, tint_strength="normal"):
     d_text_muted = ensure_contrast(d_text_muted, d_surface, 3.0, is_dark=True)
 
     # ---- on-brand text: readable color placed ON the brand color ----
+    # Pick the better of a near-white / near-black tint, then WCAG-compensate
+    # it to >= 4.5:1 so buttons stay readable on EVERY brand hue (not just blue).
+    # Before this, orange (#C4502A) produced on-brand contrast of only 4.40:1.
     near_white = mix(white, brand, 0.04)
     near_black = mix((17, 17, 17), brand, 0.10)
-    on_brand = near_white if contrast_ratio(near_white, brand) >= contrast_ratio(near_black, brand) \
-        else near_black
+    if contrast_ratio(near_white, brand) >= contrast_ratio(near_black, brand):
+        on_brand = ensure_contrast(near_white, brand, 4.5, is_dark=True)
+    else:
+        on_brand = ensure_contrast(near_black, brand, 4.5, is_dark=False)
 
     # ---- Shadows: brand hue at low alpha, never pure black ----
     shadow_sm = (

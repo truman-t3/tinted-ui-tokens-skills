@@ -24,12 +24,19 @@ Checks
    critical WCAG AA contrast pairs (text/surface, dark text/bg, on-brand) must
    stay >= 4.5:1. This catches silent numeric drift such as the old
    HSL->RGB channel-mapping bug.
+7. Output-format coverage (v1.4.0): every non-CSS format (json / tailwind /
+   scss / all) must generate without error and produce structurally valid files
+   - DTCG JSON parses and re-locks the bg golden, tailwind.config.js and
+   _tokens.scss contain the expected tokens. Coverage is also broadened beyond
+   the single blue hue by asserting on-brand contrast >= 4.5 across blue /
+   green / red / orange / purple brands (guards the razor-thin red margin).
 
 Usage
 -----
     python scripts/smoke_test.py
 """
 
+import json
 import re
 import subprocess
 import sys
@@ -181,6 +188,65 @@ def check_golden():
               f"contrast light {light:.2f} / dark {dark:.2f} / on-brand {onbrand:.2f}")
 
 
+def check_formats():
+    """v1.4.0 output-format coverage. Every non-CSS format must generate
+    without error and produce structurally valid files, and on-brand contrast
+    must stay >= 4.5 across several hues (not just the blue golden)."""
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td) / "fmt"
+
+        # --- JSON (DTCG) ---
+        out = base / "json"
+        assert run_gen("#2563EB", out, ["--format", "json"]).returncode == 0
+        jpath = out / "tokens.json"
+        assert jpath.is_file() and jpath.stat().st_size > 0, "tokens.json missing/empty"
+        data = json.loads(jpath.read_text(encoding="utf-8"))
+        assert data["color"]["bg"]["$value"].lower() == GOLDEN["BG"].lower(), \
+            f"json bg = {data['color']['bg']['$value']}, expected {GOLDEN['BG']}"
+        onb = data["color"]["on_brand"]["$value"]
+        br = data["color"]["brand"]["$value"]
+        assert contrast_ratio(hex_to_rgb(onb), hex_to_rgb(br)) >= 4.5, \
+            f"json on-brand contrast {onb}/{br} < 4.5"
+        assert "dark" in data["color"], "json missing dark-theme group"
+        print(f"  OK format json -> valid DTCG JSON, bg locked, on-brand AA OK")
+
+        # --- Tailwind ---
+        out = base / "tw"
+        assert run_gen("#2563EB", out, ["--format", "tailwind"]).returncode == 0
+        tw = (out / "tailwind.config.js").read_text(encoding="utf-8")
+        assert "module.exports" in tw and '"bg"' in tw and GOLDEN["BG"].lower() in tw.lower(), \
+            "tailwind.config.js missing expected structure"
+        print(f"  OK format tailwind -> valid tailwind.config.js")
+
+        # --- SCSS ---
+        out = base / "scss"
+        assert run_gen("#2563EB", out, ["--format", "scss"]).returncode == 0
+        scss = (out / "_tokens.scss").read_text(encoding="utf-8")
+        assert "$color-bg:" in scss and GOLDEN["BG"].lower() in scss.lower(), \
+            "_tokens.scss missing expected structure"
+        print(f"  OK format scss -> valid _tokens.scss")
+
+        # --- all: every artifact present ---
+        out = base / "all"
+        assert run_gen("#2563EB", out, ["--format", "all"]).returncode == 0
+        for f in ["tokens.css", "preview.html", "tokens.json", "tailwind.config.js", "_tokens.scss"]:
+            p = out / f
+            assert p.is_file() and p.stat().st_size > 0, f"--format all missing {f}"
+        print(f"  OK format all -> css+html+json+tailwind+scss emitted")
+
+    # --- multi-hue on-brand contrast (broadens golden beyond blue) ---
+    for brand in ["#2563EB", "#16A34A", "#DC2626", "#C4502A", "#7C3AED"]:
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td) / "mh"
+            assert run_gen(brand, out, ["--format", "css"]).returncode == 0
+            css = (out / "tokens.css").read_text(encoding="utf-8")
+            ob = grab(css, "ON-BRAND")
+            br = grab(css, "BRAND")
+            c = contrast_ratio(hex_to_rgb(ob), hex_to_rgb(br))
+            assert c >= 4.5, f"[{brand}] on-brand contrast {c:.2f} < 4.5"
+    print("  OK multi-hue on-brand contrast >= 4.5 (blue/green/red/orange/purple)")
+
+
 def main():
     print("smoke_test: chromatic brands")
     check_chromatic()
@@ -188,6 +254,8 @@ def main():
     check_semantic()
     print("smoke_test: golden values + WCAG AA contrast")
     check_golden()
+    print("smoke_test: output formats (json/tailwind/scss/all) + multi-hue contrast")
+    check_formats()
     print("smoke_test: extreme / degenerate brands")
     check_extreme()
     print("smoke_test: invalid input rejection")

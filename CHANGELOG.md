@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/), and this project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [1.4.1] - 2026-07-20
+
+### Fixed
+- **`--color-on-brand` is now WCAG AA-guaranteed on every brand hue.** It used to
+  pick the better of a near-white / near-black tint but never compensated to the
+  4.5:1 floor, so warm mid hues like orange (`#C4502A`) dropped to **4.40:1**.
+  It now runs through the same `ensure_contrast` nudge as body text, so the
+  on-brand contrast is >= 4.5:1 for blue / green / red / orange / purple alike.
+  (Caught by the new multi-hue contrast check below.)
+
+### Added
+- **CI now tests every output format, not just CSS.** `scripts/smoke_test.py`
+  gained `check_formats()`: it generates `--format json/tailwind/scss/all`,
+  asserts each returns exit 0, parses the DTCG JSON (and re-locks the bg golden),
+  and validates `tailwind.config.js` / `_tokens.scss` structure. It also asserts
+  on-brand contrast >= 4.5 across five hues, broadening the old single-blue golden.
+
+### Docs
+- All 7 non-Claude agent rule files (Cursor, Codex, Cline, WindSurf, Copilot,
+  Gemini CLI, Aider) now document the v1.4.0 flags: `--format`, `--tint-strength`,
+  and the auto `--color-on-brand` token.
+
 ## [1.4.0] - 2026-07-18
 
 ### Added

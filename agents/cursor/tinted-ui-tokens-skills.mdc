@@ -13,6 +13,10 @@ follow the instructions in `INSTRUCTIONS.md` of the tinted-ui-tokens-skills repo
 1. Collect the brand hex (ask if missing).
 2. Run `scripts/generate_tokens.py --brand <hex> --name <name> --out <dir>`.
 3. Present `tokens.css` + `preview.html`.
+4. Optional flags: `--format {css,html,both,json,tailwind,scss,all}` also emits
+   DTCG JSON / Tailwind / SCSS; `--tint-strength {subtle,normal,strong}` scales
+   the tint; `--color-on-brand` is produced automatically (readable text/icon
+   color on the brand button).
 
 Repo: https://github.com/truman-t3/tinted-ui-tokens-skills
 Method: every neutral surface gets 2–3% of the brand hue — never pure #FFF/#000/#808080.
