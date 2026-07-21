@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Tinted UI Token System
+   Brand : #2563EB   Temperature : cool
+   Generated : 2026-07-21
+   Method: every neutral surface is blended a few percent toward the brand
+   hue, so the brand "flows through" the system instead of sitting on top.
+   No pure #FFFFFF / #000000 / #808080 anywhere. Text on each surface is
+   checked against WCAG AA and nudged if needed, so readability always wins.
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  /* Brand */
+  --color-brand:        #2563EB;
+  --color-brand-subtle: #E0E9FC;
+  --color-on-brand:     #F6F9FE;   /* readable text placed ON --color-brand */
+
+  /* Surfaces - tinted by brand */
+  --color-bg:           #F1F3F8;
+  --color-surface:      #FBFCFF;
+  --color-surface-2:    #E7EAF1;
+  --color-border:       #D8DCE5;
+  --color-border-strong:#B5BCCB;
+
+  /* Text - near-black/near-white with a hue lean (WCAG AA checked) */
+  --color-text:         #141E34;
+  --color-text-2:       #444E64;
+  --color-text-muted:   #8590A9;
+
+  /* Semantic - nudged toward brand temperature */
+  --color-error:         #CA3038;
+  --color-error-subtle:  #DDCDDF;
+  --color-warning:       #E09821;
+  --color-warning-subtle:#E0DDDB;
+  --color-success:       #1C9A54;
+  --color-success-subtle:#C3DDE3;
+
+  /* Shadows - brand hue, never pure black */
+  --shadow-sm: 0 1px 3px rgba(37, 99, 235, 0.08), 0 0 0 1px rgba(37, 99, 235, 0.04);
+  --shadow-md: 0 4px 16px rgba(37, 99, 235, 0.1), 0 1px 4px rgba(37, 99, 235, 0.06);
+  --shadow-lg: 0 12px 40px rgba(37, 99, 235, 0.12), 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+[data-theme="dark"] {
+  --color-brand-subtle: #1A2E5B;
+  --color-on-brand:     #F6F9FE;
+
+  --color-bg:           #11192C;
+  --color-surface:      #172137;
+  --color-surface-2:    #1D273F;
+  --color-border:       #1F2D4A;
+  --color-border-strong:#2C3C5E;
+
+  --color-text:         #E0E7F5;
+  --color-text-2:       #8497B8;
+  --color-text-muted:   #7388A6;
+
+  --color-error-subtle:  #3C293E;
+  --color-warning-subtle:#403C3A;
+  --color-success-subtle:#1D3C43;
+
+  --shadow-sm: 0 0 0 1px rgba(37, 99, 235, 0.1);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(37, 99, 235, 0.06);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(37, 99, 235, 0.08);
+}

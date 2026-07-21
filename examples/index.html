@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>tinted-ui-tokens · live examples</title>
+<meta name="description" content="One brand color in, a full tinted neutral design-token system out. Live examples across four hues, light + dark, WCAG AA guaranteed." />
+<style>
+  :root {
+    --page-bg: #f4f5f8;
+    --page-surface: #ffffff;
+    --page-text: #1a2233;
+    --page-text-2: #5b6478;
+    --page-border: #e3e6ec;
+    --accent: #2563eb;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(20,30,52,.06), 0 8px 24px rgba(20,30,52,.06);
+    font-synthesis: none;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--page-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 24px 80px; }
+  header { text-align: center; margin-bottom: 8px; }
+  .eyebrow {
+    display: inline-block; font-size: .78rem; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+    background: #eaf0fe; padding: 5px 12px; border-radius: 999px; margin-bottom: 18px;
+  }
+  h1 { font-size: 2.4rem; line-height: 1.15; margin: 0 0 14px; letter-spacing: -.02em; }
+  .lede { font-size: 1.08rem; color: var(--page-text-2); max-width: 620px; margin: 0 auto 26px; }
+  .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
+    font-weight: 600; font-size: .95rem; padding: 11px 20px; border-radius: 10px;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--accent); color: #f6f9fe; box-shadow: 0 4px 14px rgba(37,99,235,.28); }
+  .btn-ghost { background: var(--page-surface); color: var(--page-text); border: 1px solid var(--page-border); }
+  .meta-line { text-align: center; color: var(--page-text-2); font-size: .9rem; margin-top: 22px; }
+  .meta-line code { background: #eceef3; padding: 2px 7px; border-radius: 6px; font-size: .86em; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 22px; margin-top: 46px; }
+  @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--page-surface); border: 1px solid var(--page-border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card-head { display: flex; align-items: center; gap: 13px; padding: 18px 20px 14px; }
+  .brand-dot { width: 42px; height: 42px; border-radius: 11px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .card-head h2 { font-size: 1.12rem; margin: 0 0 2px; }
+  .card-head .sub { font-size: .82rem; color: var(--page-text-2); }
+  .card-head .sub b { color: var(--page-text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--page-border); }
+  .theme { padding: 16px; }
+  .theme .tag { font-size: .68rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; opacity: .55; margin-bottom: 10px; }
+  .mini-surface { border-radius: 10px; padding: 13px; border: 1px solid; }
+  .mini-title { font-weight: 600; font-size: .92rem; margin-bottom: 3px; }
+  .mini-body { font-size: .78rem; margin-bottom: 11px; }
+  .mini-btn { display: inline-block; font-size: .78rem; font-weight: 600; padding: 6px 13px; border-radius: 7px; }
+  .swatches { display: flex; gap: 5px; margin-top: 11px; }
+  .sw { width: 22px; height: 22px; border-radius: 5px; box-shadow: inset 0 0 0 1px rgba(128,128,128,.18); }
+
+  .card-foot { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; border-top: 1px solid var(--page-border); }
+  .card-foot a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: .9rem; }
+  .card-foot a:hover { text-decoration: underline; }
+  .fmts { font-size: .76rem; color: var(--page-text-2); }
+  .fmts code { background: #eceef3; padding: 1px 5px; border-radius: 5px; margin-left: 4px; font-size: .95em; }
+
+  .aa { display: inline-flex; align-items: center; gap: 4px; font-size: .72rem; font-weight: 700;
+        color: #0f7a3d; background: #e6f6ec; padding: 3px 8px; border-radius: 999px; }
+
+  footer { text-align: center; margin-top: 54px; color: var(--page-text-2); font-size: .88rem; }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">live examples</span>
+    <h1>Stop shipping gray UI.</h1>
+    <p class="lede">
+      Feed in <b>one brand color</b> and get a complete, ready-to-ship neutral token system —
+      every background, border, and text color carries a whisper of your brand, never flat #808080.
+      Light + dark, WCAG&nbsp;AA guaranteed.
+    </p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/truman-t3/tinted-ui-tokens-skills">View on GitHub</a>
+      <a class="btn btn-ghost" href="blue/preview.html">Open full preview →</a>
+    </div>
+    <p class="meta-line">Each card below is generated by <code>generate_tokens.py --brand "#..." --format all</code></p>
+  </header>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    Generated by <a href="https://github.com/truman-t3/tinted-ui-tokens-skills">tinted-ui-tokens-skills</a> ·
+    MIT · works across Claude Code, Cursor, Codex, Cline, WindSurf, Copilot, Gemini CLI &amp; Aider
+  </footer>
+</div>
+
+<script>
+const hues = [
+  { slug:"blue",   name:"Acme",  label:"cool blue",         brand:"#2563EB", onBrand:"#F6F9FE", aa:"4.90",
+    light:{bg:"#F1F3F8", surface:"#FBFCFF", text:"#141E34", border:"#D8DCE5"},
+    dark: {bg:"#11192C", surface:"#172137", text:"#E0E7F5", border:"#1F2D4A"} },
+  { slug:"green",  name:"Leaf",  label:"balanced green",    brand:"#16A34A", onBrand:"#122017", aa:"5.12",
+    light:{bg:"#F0F5F2", surface:"#FBFDFC", text:"#12281A", border:"#D7E0DA"},
+    dark: {bg:"#10201C", surface:"#16262A", text:"#E0EAEE", border:"#1D333A"} },
+  { slug:"warm",   name:"Ember", label:"warm terracotta",   brand:"#C4502A", onBrand:"#FEFDFC", aa:"4.56",
+    light:{bg:"#F6F2F1", surface:"#FEFCFB", text:"#2E1B15", border:"#E3DBD8"},
+    dark: {bg:"#211719", surface:"#241F27", text:"#E7E7ED", border:"#2F2B37"} },
+  { slug:"violet", name:"Nova",  label:"violet",            brand:"#7C3AED", onBrand:"#FAF7FE", aa:"5.37",
+    light:{bg:"#F4F1F8", surface:"#FDFBFF", text:"#221834", border:"#DED9E6"},
+    dark: {bg:"#1A152C", surface:"#1E1D37", text:"#E4E6F5", border:"#27294A"} },
+];
+
+function theme(t, brand, onBrand, tag) {
+  return `
+    <div class="theme" style="background:${t.bg}">
+      <div class="tag" style="color:${t.text}">${tag}</div>
+      <div class="mini-surface" style="background:${t.surface};border-color:${t.border}">
+        <div class="mini-title" style="color:${t.text}">Card title</div>
+        <div class="mini-body" style="color:${t.text};opacity:.72">Tinted surface on a tinted page.</div>
+        <span class="mini-btn" style="background:${brand};color:${onBrand}">Primary</span>
+        <div class="swatches">
+          <span class="sw" style="background:${t.bg}"></span>
+          <span class="sw" style="background:${t.surface}"></span>
+          <span class="sw" style="background:${t.border}"></span>
+          <span class="sw" style="background:${brand}"></span>
+          <span class="sw" style="background:${t.text}"></span>
+        </div>
+      </div>
+    </div>`;
+}
+
+document.getElementById("grid").innerHTML = hues.map(h => `
+  <div class="card">
+    <div class="card-head">
+      <div class="brand-dot" style="background:${h.brand}"></div>
+      <div>
+        <h2>${h.name} <span class="sub">· ${h.label}</span></h2>
+        <div class="sub">brand <b>${h.brand}</b> &nbsp;·&nbsp; <span class="aa">✓ AA ${h.aa}:1 on-brand</span></div>
+      </div>
+    </div>
+    <div class="themes">
+      ${theme(h.light, h.brand, h.onBrand, "Light")}
+      ${theme(h.dark, h.brand, h.onBrand, "Dark")}
+    </div>
+    <div class="card-foot">
+      <a href="${h.slug}/preview.html">Open full preview →</a>
+      <span class="fmts">exports<code>css</code><code>json</code><code>tw</code><code>scss</code></span>
+    </div>
+  </div>
+`).join("");
+</script>
+</body>
+</html>

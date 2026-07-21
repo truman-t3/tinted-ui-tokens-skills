@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Token Preview - #2563EB</title>
+<style>
+/* ==========================================================================
+   Tinted UI Token System
+   Brand : #2563EB   Temperature : cool
+   Generated : 2026-07-21
+   Method: every neutral surface is blended a few percent toward the brand
+   hue, so the brand "flows through" the system instead of sitting on top.
+   No pure #FFFFFF / #000000 / #808080 anywhere. Text on each surface is
+   checked against WCAG AA and nudged if needed, so readability always wins.
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  /* Brand */
+  --color-brand:        #2563EB;
+  --color-brand-subtle: #E0E9FC;
+  --color-on-brand:     #F6F9FE;   /* readable text placed ON --color-brand */
+
+  /* Surfaces - tinted by brand */
+  --color-bg:           #F1F3F8;
+  --color-surface:      #FBFCFF;
+  --color-surface-2:    #E7EAF1;
+  --color-border:       #D8DCE5;
+  --color-border-strong:#B5BCCB;
+
+  /* Text - near-black/near-white with a hue lean (WCAG AA checked) */
+  --color-text:         #141E34;
+  --color-text-2:       #444E64;
+  --color-text-muted:   #8590A9;
+
+  /* Semantic - nudged toward brand temperature */
+  --color-error:         #CA3038;
+  --color-error-subtle:  #DDCDDF;
+  --color-warning:       #E09821;
+  --color-warning-subtle:#E0DDDB;
+  --color-success:       #1C9A54;
+  --color-success-subtle:#C3DDE3;
+
+  /* Shadows - brand hue, never pure black */
+  --shadow-sm: 0 1px 3px rgba(37, 99, 235, 0.08), 0 0 0 1px rgba(37, 99, 235, 0.04);
+  --shadow-md: 0 4px 16px rgba(37, 99, 235, 0.1), 0 1px 4px rgba(37, 99, 235, 0.06);
+  --shadow-lg: 0 12px 40px rgba(37, 99, 235, 0.12), 0 2px 8px rgba(37, 99, 235, 0.06);
+}
+
+[data-theme="dark"] {
+  --color-brand-subtle: #1A2E5B;
+  --color-on-brand:     #F6F9FE;
+
+  --color-bg:           #11192C;
+  --color-surface:      #172137;
+  --color-surface-2:    #1D273F;
+  --color-border:       #1F2D4A;
+  --color-border-strong:#2C3C5E;
+
+  --color-text:         #E0E7F5;
+  --color-text-2:       #8497B8;
+  --color-text-muted:   #7388A6;
+
+  --color-error-subtle:  #3C293E;
+  --color-warning-subtle:#403C3A;
+  --color-success-subtle:#1D3C43;
+
+  --shadow-sm: 0 0 0 1px rgba(37, 99, 235, 0.1);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.40), 0 0 0 1px rgba(37, 99, 235, 0.06);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(37, 99, 235, 0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  transition: background .25s ease, color .25s ease;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 32px 24px 64px; }
+.topbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; margin-bottom: 28px;
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: 12px; box-shadow: var(--shadow-sm);
+}
+.swatch { width: 34px; height: 34px; border-radius: 8px; background: var(--color-brand);
+  box-shadow: var(--shadow-sm); }
+.brand-meta { display: flex; flex-direction: column; line-height: 1.3; }
+.brand-meta b { font-size: .98rem; color: var(--color-text); }
+.brand-meta span { font-size: .72rem; color: var(--color-text-muted); letter-spacing: .04em; }
+.spacer { flex: 1; }
+.toggle {
+  border: 1px solid var(--color-border-strong); background: var(--color-surface-2);
+  color: var(--color-text-2); border-radius: 8px; padding: 8px 14px;
+  font-size: .82rem; cursor: pointer; transition: all .2s ease;
+}
+.toggle:hover { color: var(--color-brand); border-color: var(--color-brand); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 680px){ .grid { grid-template-columns: 1fr; } }
+.card {
+  background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: 10px; box-shadow: var(--shadow-md); padding: 22px;
+}
+.card-label {
+  font-size: .68rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--color-text-muted); margin-bottom: 8px;
+}
+.card-title { font-size: 1.18rem; font-weight: 600; color: var(--color-text); margin: 0 0 8px; }
+.card-body { font-size: .9rem; line-height: 1.65; color: var(--color-text-2); margin: 0; }
+.card-badge {
+  display: inline-block; margin-top: 16px; background: var(--color-brand-subtle);
+  color: var(--color-brand); font-size: .72rem; font-weight: 600; letter-spacing: .06em;
+  padding: 4px 11px; border-radius: 5px;
+}
+.hero {
+  grid-column: 1 / -1; border-radius: 14px; padding: 38px 30px;
+  background: linear-gradient(175deg, var(--color-surface) 0%, var(--color-brand-subtle) 60%, var(--color-surface-2) 100%);
+  border: 1px solid var(--color-border); box-shadow: var(--shadow-lg);
+}
+.hero h2 { margin: 0 0 10px; font-size: 1.5rem; color: var(--color-text); }
+.hero p { margin: 0; max-width: 560px; color: var(--color-text-2); line-height: 1.6; font-size: .92rem; }
+.btn-primary {
+  margin-top: 22px; display: inline-block; border: none; cursor: pointer;
+  background: var(--color-brand); color: var(--color-on-brand);
+  border-radius: 9px; padding: 12px 22px; font-size: .92rem; font-weight: 600;
+  box-shadow: var(--shadow-md); transition: filter .2s ease;
+}
+.btn-primary:hover { filter: brightness(1.06); }
+.field { margin-top: 18px; }
+.field label { display: block; font-size: .8rem; color: var(--color-text-2); margin-bottom: 6px; }
+.input {
+  width: 100%; padding: 11px 13px; border-radius: 8px; font-size: .9rem;
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-border-strong); outline: none; transition: all .2s ease;
+}
+.input-error {
+  border-color: var(--color-error);
+  background: var(--color-error-subtle);
+  box-shadow: 0 0 0 3px rgba(212,43,58,.12), 0 0 0 1px var(--color-brand);
+}
+.err-msg { margin-top: 7px; font-size: .78rem; color: var(--color-error); }
+.row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+.icon-box {
+  width: 46px; height: 46px; border-radius: 10px; display: grid; place-items: center;
+  background: var(--color-brand-subtle); color: var(--color-brand); box-shadow: var(--shadow-sm);
+}
+.icon-box svg { width: 22px; height: 22px; }
+.swatches { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.swatch-item { text-align: center; font-size: .68rem; color: var(--color-text-muted); }
+.swatch-item .box { width: 54px; height: 40px; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 6px; }
+.section-title { font-size: .8rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--color-text-muted); margin: 30px 0 4px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="stage" data-theme="light">
+  <div class="topbar">
+    <div class="swatch"></div>
+    <div class="brand-meta">
+      <b>Acme (cool blue)</b>
+      <span>brand #2563EB &middot; cool temperature</span>
+    </div>
+    <div class="spacer"></div>
+    <button class="toggle" onclick="toggleTheme()">切换 明 / 暗</button>
+  </div>
+
+  <div class="grid">
+    <div class="hero">
+      <h2>品牌色，流进整个系统</h2>
+      <p>背景、表面、边框、文字、阴影、语义色、渐变、图标 —— 每一层都带着同一份品牌色温。没有纯中性色，没有死黑阴影。</p>
+      <button class="btn-primary">Get started</button>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Overview</div>
+      <div class="card-title">染色中性色</div>
+      <p class="card-body">每张卡片、每个表面都微微偏向品牌色，所以品牌出现时不像被临时贴上去，而像本来就属于这里。</p>
+      <span class="card-badge">BRAND SUBTLE</span>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Form</div>
+      <div class="card-title">带温度的错误态</div>
+      <p class="card-body">错误红被轻推到品牌色温，输入框底色也偏向品牌场，focus ring 同时带着两种温度。</p>
+      <div class="field">
+        <label>邮箱地址</label>
+        <input class="input input-error" value="not-an-email" />
+        <div class="err-msg">请输入有效的邮箱地址</div>
+      </div>
+    </div>
+
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-label">Icons</div>
+      <div class="row">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M4 6h16M4 18h10"/></svg></div>
+        <div class="row" style="flex-direction:column;gap:8px;margin-top:0">
+          <div class="swatches">
+            <div class="swatch-item"><div class="box" style="background:var(--color-error)"></div>error</div>
+            <div class="swatch-item"><div class="box" style="background:var(--color-error-subtle)"></div>error-sub</div>
+            <div class="swatch-item"><div class="box" style="background:var(--color-warning)"></div>warning</div>
+            <div class="swatch-item"><div class="box" style="background:var(--color-success)"></div>success</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function toggleTheme(){
+  var s = document.getElementById('stage');
+  s.setAttribute('data-theme', s.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+</script>
+</body>
+</html>

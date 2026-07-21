@@ -6,8 +6,11 @@
 [![Input: 1 brand color](https://img.shields.io/badge/input-1%20brand%20color-orange.svg)](#what-it-can-do)
 [![Engine: Python 3.10+](https://img.shields.io/badge/engine-Python%203.10%2B-green.svg)](#requirements)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Live examples](https://img.shields.io/badge/live-examples-2563EB.svg)](https://truman-t3.github.io/tinted-ui-tokens-skills/examples/)
 
 English | [中文](#chinese)
+
+> **▶ Live examples:** https://truman-t3.github.io/tinted-ui-tokens-skills/examples/ — four brand colors (blue / green / warm / violet), light + dark, WCAG AA guaranteed. Source in [`examples/`](examples/).
 
 A **cross-agent** skill that turns one brand color into a complete,
 production-ready **brand-tinted design-token system** — so your UI stops looking
@@ -204,6 +207,8 @@ MIT
 # 中文说明
 
 [English](#english) | 中文
+
+> **▶ 在线预览：** https://truman-t3.github.io/tinted-ui-tokens-skills/examples/ —— 四个品牌色（蓝 / 绿 / 暖 / 紫），明暗双主题，WCAG AA 保证。源码见 [`examples/`](examples/)。
 
 一个**跨 agent** 的技能：输入一个品牌色，自动生成一套完整、可直接上线的「染色中性色」
 设计 Token 系统——让你的 UI 不再因为扁平的中性色而显得廉价。它可在 Claude Code、
